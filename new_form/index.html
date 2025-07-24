@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>yoForms</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="../assets/js/alert.js" defer></script>
+<script src="../assets/js/toggle.js" defer></script>
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        gap: 20px;
+        background-color: #f0f2f5;
+        color: #333;
+        transition: background-color 0.3s, color 0.3s;
+        min-height: 100vh;
+        box-sizing: border-box;
+    }
+
+    body.dark-mode {
+        background-color: #1a1a2e;
+        color: #e0e0e0;
+    }
+
+    #controls, #preview {
+        flex: 1;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+
+    body.dark-mode #controls,
+    body.dark-mode #preview {
+        border-color: #4a4a6e;
+        background-color: #2e2e4a;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    h2 {
+        color: #007bff;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    body.dark-mode h2 {
+        color: #88b0ff;
+    }
+
+    select, button, input[type="text"], input[type="tel"], input[type="number"], input[type="email"],
+    input[type="date"], input[type="password"], textarea {
+        margin-bottom: 15px;
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        background-color: #fefefe;
+        color: #333;
+        transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+    }
+
+    body.dark-mode select,
+    body.dark-mode button,
+    body.dark-mode input[type="text"],
+    body.dark-mode input[type="number"],
+    body.dark-mode input[type="email"],
+    body.dark-mode input[type="date"],
+    body.dark-mode input[type="password"],
+    body.dark-mode textarea, body.darkmode input[type="tel"] {
+        background-color: #3a3a5a;
+        border-color: #5a5a7a;
+        color: #e0e0e0;
+    }
+    .form-element{
+            display:flex;
+            justify-content:  flex-start;
+            align-items: center;
+            }
+
+    button {
+        background-color: #007bff;
+        width:fit-content !important;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s, transform 0.2s;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    button:hover {
+        background-color: #0056b3;
+        transform: translateY(-1px);
+    }
+
+    body.dark-mode button {
+        background-color: #6a8eff;
+        box-shadow: 0 2px 6px (0, 0, 0, 0.3);
+    }
+
+    body.dark-mode button:hover {
+        background-color: #4a6ee0;
+    }
+
+    .form-element {
+        position: relative;
+        padding: 15px;
+        margin-bottom: 15px;
+        border: 1px dashed #e0e0e0;
+        border-radius: 8px;
+        background-color: #fdfdfd;
+        flex-wrap: wrap;
+    }
+
+    body.dark-mode .form-element {
+        border-color: #4a4a6e;
+        background-color: #3a3a5a;
+    }
+
+    .remove-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        color: #dc3545;
+        font-size: 1.2em;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 50%;
+        transition: color 0.2s, background-color 0.2s;
+        z-index: 10;
+    }
+
+    .remove-button:hover {
+        color: #c82333;
+        background-color: rgba(220, 53, 69, 0.1);
+    }
+
+    body.dark-mode .remove-button {
+        color: #ff7f7f;
+    }
+
+    body.dark-mode .remove-button:hover {
+        color: #ff5f5f;
+        background-color: rgba(255, 127, 127, 0.1);
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+        margin-bottom: 20px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+    #liveFormPreview label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: inherit;
+    }
+    #liveFormPreview input[type="checkbox"],
+    #liveFormPreview input[type="radio"] {
+        width: auto;
+        margin-right: 5px;
+    }
+    #liveFormPreview button {
+        margin-top: 10px;
+    }
+
+    .lutan-logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: #007bff;
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    body.dark-mode .lutan-logo {
+        color: #88b0ff;
+        border-top-color: #5a5a7a;
+    }
+    .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease-in-out;
+            position: relative;
+            color: #333; /* Default text color for modal */
+        }
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+        .modal-content.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .modal-content.info {
+            background-color: #84d4ff;
+            color: rgb(0, 0, 0);
+        }
+        .modal-content.error {
+            background-color: #f44336;
+            color: white;
+        }
+        :disabled{
+            cursor: not-allowed !important;
+            background: grey !important;
+        }
+        .modal-content h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .modal-content p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .modal-content button {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .modal-content button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        #modalCloseButton{
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: #0000 !important;
+        border: 0 !important;
+        }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="controls">
+    <h2>Form Builder Controls</h2>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; cursor: pointer;" id="darkModeToggle">
+            <i class="fas fa-sun"></i>
+    </div>
+
+    <h3>Form Name:</h3><p>
+    <input type="text" id="formName" placeholder="Enter Form Name"><br>
+    <h3>Add Element:</h3>
+    <select id="elementType" required>
+        <option value="">-- Select Element Type --</option>
+        <option value="phoneNumberInput">Phone Number Input</option>
+        <option value="textInput">Text Input</option>
+        <option value="numberInput">Number Input</option>
+        <option value="emailInput">Email Input</option>
+        <option value="dateInput">Date Input</option>
+        <option value="passwordInput">Password Input</option>
+        <option value="textarea">Text Area</option>
+        <option value="checkbox">Checkbox</option>
+        <option value="radio">Radio Button</option>
+        <option value="select">Dropdown (Select)</option>
+        <option value="button">Button</option>
+        <option value="heading1">Heading 1</option>
+        <option value="heading2">Heading 2</option>
+        <option value="heading3">Heading 3</option>
+        <option value="paragraph">Paragraph</option>
+        <option value="boldText">Bold Text</option>
+    </select>
+
+    <div id="elementOptions">
+    </div>
+
+    <button id="addElement">Add Element to Form</button>
+
+    <h3>Form Actions:</h3>
+    <button id="clearForm">Clear Form</button>
+    <button id="generateHTML" style="display: none;">Generate HTML Code</button>
+    <button id="publishForm">Publish Form</button>
+
+    <div class="lutan-logo">
+        Lutan Tech
+    </div>
+</div>
+
+<div id="preview">
+    <h2>Form Preview</h2>
+    <form id="liveFormPreview">
+    </form>
+</div>
+<div id="customModalOverlay" class="modal-overlay">
+    <div id="customModalContent" class="modal-content">
+        <h3 id="modalTitle"></h3>
+        <p id="modalMessage"></p>
+        <button id="modalCloseButton">X</button>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const elementTypeSelect = document.getElementById('elementType');
+        const elementOptionsDiv = document.getElementById('elementOptions');
+        const addElementButton = document.getElementById('addElement');
+        const liveFormPreview = document.getElementById('liveFormPreview');
+        const clearFormButton = document.getElementById('clearForm');
+        const generateHTMLButton = document.getElementById('generateHTML');
+        const publishFormButton = document.getElementById('publishForm');
+        const darkModeToggle = document.getElementById('darkModeToggle');
+  const body = document.body;
+
+        const createTextInput = (labelText = 'Text Label') => {
+            const inputId = labelText.replace(/\s/g, '_');
+            return `
+                <label for="${inputId}">${labelText}:</label><br>
+                <input type="text" id="${inputId}" placeholder="Enter text"><br>
+            `;
+        };
+
+        const createNumberInput = (labelText = 'Number Label') => {
+            const inputId = labelText.replace(/\s/g, '_');
+            return `
+                <label for="${inputId}">${labelText}:</label><br>
+                <input type="number" id="${inputId}" placeholder="Enter number"><br>
+            `;
+        };
+
+        const createEmailInput = (labelText = 'Email Label') => {
+            const inputId = labelText.replace(/\s/g, '_');
+            return `
+                <label for="${inputId}">${labelText}:</label><br>
+                <input type="email" id="${inputId}" placeholder="Enter email"><br>
+            `;
+        };
+
+        const createDateInput = (labelText = 'Date Label') => {
+            const inputId = labelText.replace(/\s/g, '_');
+            return `
+                <label for="${inputId}">${labelText}:</label><br>
+                <input type="date" id="${inputId}"><br>
+            `;
+        };
+
+        const createPasswordInput = (labelText = 'Password Label') => {
+            const inputId = labelText.replace(/\s/g, '_');
+            return `
+                <label for="${inputId}">${labelText}:</label><br>
+                <input type="password" id="${inputId}" placeholder="Enter password"><br>
+            `;
+        };
+
+        const createTextArea = (labelText = 'Text Area Label') => {
+            const inputId = labelText.replace(/\s/g, '_');
+            return `
+                <label for="${inputId}">${labelText}:</label><br>
+                <textarea id="${inputId}" rows="4" placeholder="Enter long text"></textarea><br>
+            `;
+        };
+
+        const createCheckbox = (labelText = 'Checkbox Label') => {
+            const inputId = labelText.replace(/\s/g, '_');
+            return `
+                <input type="checkbox" id="${inputId}">
+                <label for="${inputId}">${labelText}</label><br>
+            `;
+        };
+
+        const createRadioButton = (groupName = 'radioGroup', labelText = 'Radio Option') => {
+            const inputId = `${groupName.replace(/\s/g, '_')}_${labelText.replace(/\s/g, '_')}`;
+            return `
+                <input type="radio" name="${groupName.replace(/\s/g, '_')}" id="${inputId}">
+                <label for="${inputId}">${labelText}</label><br>
+            `;
+        };
+
+        const createSelectInput = (labelText = 'Select Label', options = ['Option 1', 'Option 2']) => {
+            const inputId = labelText.replace(/\s/g, '_');
+            let optionsHtml = options.map(opt => `<option value="${opt.toLowerCase().replace(/\s/g, '-')}">${opt}</option>`).join('');
+            return `
+                <label for="${inputId}">${labelText}:</label><br>
+                <select id="${inputId}">${optionsHtml}</select><br>
+            `;
+        };
+
+        const createButton = (buttonText = 'Submit Button') => `
+            <button type="button">${buttonText}</button><br>
+        `;
+
+        const createHeading = (level, text = `Heading ${level} Text`) => `<h${level}>${text}</h${level}>`;
+        const createParagraph = (text = 'This is a paragraph of text.') => `<p>${text}</p>`;
+        const createBoldText = (text = 'Bold text here.') => `<strong>${text}</strong>`;
+
+        const createPhoneNumberInput = (labelText = 'Phone Number') => {
+            const inputId = labelText.replace(/\s/g, '_');
+            return `
+                <label for="${inputId}">${labelText}:</label><br>
+                <input type="tel" id="${inputId}" placeholder="e.g., +1234567890" pattern="[0-9]{10,15}" title="Phone number (10-15 digits, no spaces or dashes)"><br>
+            `;
+        };
+
+        const createWhatsAppButton = (buttonText = 'Send via WhatsApp', phoneInputId = 'phone_number_input', defaultMessage = 'Hello, I would like to inquire about your services.') => {
+            return `
+                <button type="button" class="whatsapp-send-button" data-phone-input-id="${phoneInputId}" data-default-message="${defaultMessage}">${buttonText}</button><br>
+            `;
+        };
+
+        const renderElementOptions = (elementType) => {
+            elementOptionsDiv.innerHTML = '';
+            let html = '';
+            switch (elementType) {
+                case 'textInput':
+                case 'numberInput':
+                case 'emailInput':
+                case 'dateInput':
+                case 'passwordInput':
+                case 'textarea':
+                case 'checkbox':
+                case 'phoneNumberInput':
+                    html = `
+                        <label>Label Text:</label>
+                        <input type="text" id="labelText" placeholder="e.g., Your Name">
+                    `;
+                    break;
+                case 'radio':
+                    html = `
+                        <label>Group Name:</label>
+                        <input type="text" id="radioGroupName" placeholder="e.g., Gender">
+                        <label>Option Label:</label>
+                        <input type="text" id="radioOptionLabel" placeholder="e.g., Male">
+                    `;
+                    break;
+                case 'select':
+                    html = `
+                        <label>Label Text:</label>
+                        <input type="text" id="selectLabelText" placeholder="e.g., Choose an option">
+                        <label>Options (comma-separated):</label>
+                        <input type="text" id="selectOptions" placeholder="e.g., Red, Green, Blue">
+                    `;
+                    break;
+                case 'button':
+                    html = `
+                        <label>Button Text:</label>
+                        <input type="text" id="buttonText" placeholder="e.g., Submit">
+                    `;
+                    break;
+                case 'whatsappButton':
+                    html = `
+                        <label>Button Text:</label>
+                        <input type="text" id="whatsappButtonText" placeholder="e.g., Send Message">
+                        <label>Associated Phone Input ID (optional):</label>
+                        <input type="text" id="whatsappPhoneInputId" placeholder="e.g., phone_number_input">
+                        <label>Default Message (optional):</label>
+                        <input type="text" id="whatsappDefaultMessage" placeholder="e.g., I have a question.">
+                    `;
+                    break;
+                case 'heading1':
+                case 'heading2':
+                case 'heading3':
+                case 'paragraph':
+                case 'boldText':
+                    html = `
+                        <label>Content Text:</label>
+                        <input type="text" id="contentText" placeholder="Enter text">
+                    `;
+                    break;
+            }
+            elementOptionsDiv.innerHTML = html;
+        };
+
+        elementTypeSelect.addEventListener('change', (event) => {
+            renderElementOptions(event.target.value);
+        });
+
+// Add this where you define or append new form elements
+const makeElementDraggable = (element) => {
+    element.setAttribute('draggable', 'true');
+    element.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', element.dataset.id);
+        e.dropEffect = 'move';
+    });
+};
+
+// Assign unique IDs and enable dragging when adding elements
+const addElementToPreview = (elementHtml) => {
+    const newDiv = document.createElement('div');
+    newDiv.className = 'form-element';
+    newDiv.dataset.id = Date.now().toString(); 
+    newDiv.innerHTML = elementHtml;
+    newDiv.style.cursor = 'grab'
+
+    const removeButton = document.createElement('button');
+    removeButton.className = 'remove-button';
+    removeButton.innerHTML = '<i class="fas fa-trash"></i>';
+    removeButton.addEventListener('click', () => {
+        newDiv.remove();
+    });
+    newDiv.appendChild(removeButton);
+
+    makeElementDraggable(newDiv);
+    liveFormPreview.appendChild(newDiv);
+};
+
+// Enable drop behavior on the form preview area
+liveFormPreview.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+});
+
+liveFormPreview.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const draggedId = e.dataTransfer.getData('text/plain');
+    const draggedEl = liveFormPreview.querySelector(`[data-id='${draggedId}']`);
+    const dropTarget = [...liveFormPreview.children].find((el) => {
+        const rect = el.getBoundingClientRect();
+        return e.clientY >= rect.top && e.clientY <= rect.bottom;
+    });
+
+    if (draggedEl && dropTarget && draggedEl !== dropTarget) {
+        const dropIndex = [...liveFormPreview.children].indexOf(dropTarget);
+        const dragIndex = [...liveFormPreview.children].indexOf(draggedEl);
+        if (dragIndex < dropIndex) {
+            dropTarget.after(draggedEl);
+        } else {
+            dropTarget.before(draggedEl);
+        }
+    }
+});
+
+        addElementButton.addEventListener('click', () => {
+            const selectedType = elementTypeSelect.value;
+            let elementHtml = '';
+            let labelText;
+            let groupName;
+            let optionLabel;
+            let selectOptions;
+            let selectLabel;
+            let buttonText;
+            let contentText;
+            let whatsappButtonText;
+            let whatsappPhoneInputId;
+            let whatsappDefaultMessage;
+
+            switch (selectedType) {
+                case 'textInput':
+                    labelText = document.getElementById('labelText').value || 'Text Label';
+                    elementHtml = createTextInput(labelText);
+                    break;
+                case 'numberInput':
+                    labelText = document.getElementById('labelText').value || 'Number Label';
+                    elementHtml = createNumberInput(labelText);
+                    break;
+                case 'emailInput':
+                    labelText = document.getElementById('labelText').value || 'Email Label';
+                    elementHtml = createEmailInput(labelText);
+                    break;
+                case 'dateInput':
+                    labelText = document.getElementById('labelText').value || 'Date Label';
+                    elementHtml = createDateInput(labelText);
+                    break;
+                case 'passwordInput':
+                    labelText = document.getElementById('labelText').value || 'Password Label';
+                    elementHtml = createPasswordInput(labelText);
+                    break;
+                case 'textarea':
+                    labelText = document.getElementById('labelText').value || 'Text Area Label';
+                    elementHtml = createTextArea(labelText);
+                    break;
+                case 'checkbox':
+                    labelText = document.getElementById('labelText').value || 'Checkbox Label';
+                    elementHtml = createCheckbox(labelText);
+                    break;
+                case 'radio':
+                    groupName = document.getElementById('radioGroupName').value || 'radioGroup';
+                    optionLabel = document.getElementById('radioOptionLabel').value || 'Radio Option';
+                    elementHtml = createRadioButton(groupName, optionLabel);
+                    break;
+                case 'select':
+                    selectLabel = document.getElementById('selectLabelText').value || 'Select Label';
+                    selectOptions = document.getElementById('selectOptions').value ? document.getElementById('selectOptions').value.split(',').map(s => s.trim()) : ['Option 1', 'Option 2'];
+                    elementHtml = createSelectInput(selectLabel, selectOptions);
+                    break;
+                case 'button':
+                    buttonText = document.getElementById('buttonText').value || 'Submit Button';
+                    elementHtml = createButton(buttonText);
+                    break;
+                case 'heading1':
+                    contentText = document.getElementById('contentText').value || 'Heading 1 Text';
+                    elementHtml = createHeading(1, contentText);
+                    break;
+                case 'heading2':
+                    contentText = document.getElementById('contentText').value || 'Heading 2 Text';
+                    elementHtml = createHeading(2, contentText);
+                    break;
+                case 'heading3':
+                    contentText = document.getElementById('contentText').value || 'Heading 3 Text';
+                    elementHtml = createHeading(3, contentText);
+                    break;
+                case 'paragraph':
+                    contentText = document.getElementById('contentText').value || 'This is a paragraph of text.';
+                    elementHtml = createParagraph(contentText);
+                    break;
+                case 'boldText':
+                    contentText = document.getElementById('contentText').value || 'Bold text here.';
+                    elementHtml = createBoldText(contentText);
+                    break;
+                case 'phoneNumberInput':
+                    labelText = document.getElementById('labelText').value || 'Phone Number';
+                    elementHtml = createPhoneNumberInput(labelText);
+                    break;
+                case 'whatsappButton':
+                    whatsappButtonText = document.getElementById('whatsappButtonText').value || 'Send via WhatsApp';
+                    whatsappPhoneInputId = document.getElementById('whatsappPhoneInputId').value || 'phone_number_input';
+                    whatsappDefaultMessage = document.getElementById('whatsappDefaultMessage').value || 'Hello, I would like to inquire about your services.';
+                    elementHtml = createWhatsAppButton(whatsappButtonText, whatsappPhoneInputId, whatsappDefaultMessage);
+                    break;
+                default:
+                    console.log('Please select an element type.');
+                    return;
+            }
+
+            if (elementHtml) {
+                addElementToPreview(elementHtml);
+
+                if (selectedType === 'whatsappButton') {
+                    const addedButton = liveFormPreview.lastElementChild.querySelector('.whatsapp-send-button');
+                    if (addedButton) {
+                        addedButton.addEventListener('click', (event) => {
+                            const targetPhoneInputId = event.target.dataset.phoneInputId;
+                            const defaultMsg = event.target.dataset.defaultMessage;
+                            const phoneInput = liveFormPreview.querySelector(`#${targetPhoneInputId}`);
+                            let phoneNumber = '';
+                            if (phoneInput) {
+                                phoneNumber = phoneInput.value.replace(/\D/g, '');
+                            }
+
+                            if (phoneNumber) {
+                                const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMsg)}`;
+                                window.open(whatsappUrl, '_blank');
+                            } else {
+                                console.log('Please enter a phone number in the associated input field.');
+                            }
+                        });
+                    }
+                }
+
+                elementTypeSelect.value = '';
+                elementOptionsDiv.innerHTML = '';
+            }
+        });
+
+        clearFormButton.addEventListener('click', () => {
+            liveFormPreview.innerHTML = '';
+        });
+
+// ... (rest of your existing script)
+
+const generateFormHtml = (includeRemoveButtons) => {
+    let formContent;
+    if (includeRemoveButtons) {
+        formContent = liveFormPreview.innerHTML;
+    } else {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = liveFormPreview.innerHTML;
+        const removeButtons = tempDiv.querySelectorAll('.remove-button');
+        removeButtons.forEach(btn => btn.remove());
+        formContent = tempDiv.innerHTML;
+    }
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(formContent, 'text/html');
+    const whatsappButtons = doc.querySelectorAll('.whatsapp-send-button');
+    formContent = doc.body.innerHTML;
+
+    return `
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Form</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 20px;
+            background-color: ${body.classList.contains('dark-mode') ? '#1a1a2e' : '#f0f2f5'};
+            color: ${body.classList.contains('dark-mode') ? '#e0e0e0' : '#333'};
+        }
+        form {
+            padding: 20px;
+            border: 1px solid ${body.classList.contains('dark-mode') ? '#4a4a6e' : '#ccc'};
+            border-radius: 8px;
+            background-color: ${body.classList.contains('dark-mode') ? '#2e2e4a' : '#f9f9f9'};
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: inherit;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        input[type="date"],
+        input[type="password"],
+        input[type="tel"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid ${body.classList.contains('dark-mode') ? '#5a5a7a' : '#ddd'};
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: ${body.classList.contains('dark-mode') ? '#3a3a5a' : '#fefefe'};
+            color: inherit;
+        }
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: auto;
+            margin-right: 5px;
+        }
+        button {
+            background-color: ${body.classList.contains('dark-mode') ? '#6a8eff' : '#007bff'};
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width:fit-content !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            background-color: ${body.classList.contains('dark-mode') ? '#4a6ee0' : '#0056b3'};
+        }
+        h1, h2, h3, p, strong {
+            margin-bottom: 10px;
+            color: inherit;
+        }
+            .form-element{
+            display:flex;
+            justify-content:  flex-start;
+            align-items: center;
+                flex-wrap: wrap;
+            }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    </head>
+    <form id="content">
+        ${formContent}
+    </form>
+
+
+    `;
+};
+
+
+        generateHTMLButton.addEventListener('click', () => {
+            const fullHTML = generateFormHtml(true);
+            const newWindow = window.open();
+            newWindow.document.write(fullHTML);
+            newWindow.document.close();
+        });
+
+        publishFormButton.addEventListener('click', () => {
+            const fullHTML = generateFormHtml(false);
+            const id = localStorage.getItem('id')
+            const name = document.getElementById('formName').value.trim()
+            if(fullHTML && id && name){
+            Publish(id, fullHTML, name)
+            } else{
+                customModal('Please, fill in all details!','error')
+            }
+        });
+    async function Publish(id, fullHTML, name) {
+    try {
+        const res = await fetch('http://127.0.0.1:5000/api/save-form', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user_id: id,      
+                html: fullHTML,
+                name:name
+            })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || data.error) {
+            customModal(data.error || 'Something went wrong 😬', 'error', 1000);
+
+        } else {
+            customModal(data.message || 'Publish successful 🎉', 'success');
+        }
+    } catch (err) {
+        console.error('Publish failed:', err);
+        customModal('Network error or server is offline 😵‍💫', 'error');
+    }
+} 
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YoForms - Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+        .slider.round {
+            border-radius: 34px;
+        }
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease-in-out;
+            position: relative;
+            color: #333; 
+            top: 0 !important;
+            right: 0 !important;
+            position: fixed;
+        }
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+        .modal-content.success {
+            background-color: #4CAF50;
+            color: rgb(0, 0, 0);
+            p{
+                color: black !important;
+            }
+        }
+        .modal-content.error {
+            background-color: #f44336;
+            color: rgb(0, 0, 0);
+            p{
+                color: black !important;
+            }
+        }
+        .modal-content h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .modal-content p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .modal-content button {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .modal-content button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Dark Mode Specific Styles for the main page elements */
+        body.dark-mode {
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+        }
+        body.dark-mode div.max-w-md {
+            background-color: #2e2e4a;
+            border-color: #4a4a6e;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        body.dark-mode h2 {
+            color: #88b0ff;
+        }
+        body.dark-mode label {
+            color: #e0e0e0;
+        }
+        body.dark-mode input {
+            background-color: #3a3a5a;
+            border-color: #5a5a7a;
+            color: #e0e0e0;
+        }
+        body.dark-mode button[type="submit"] {
+            background-color: #6a8eff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        body.dark-mode button[type="submit"]:hover {
+            background-color: #4a6ee0;
+        }
+        body.dark-mode p {
+            color: #b0b0b0;
+        }
+        body.dark-mode a {
+            color: #88b0ff;
+        }
+        body.dark-mode .lutan-logo {
+            color: #88b0ff;
+            border-top-color: #5a5a7a;
+        }
+        #modalCloseButton{
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: #0000 !important;
+        border: 0 !important;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-inter flex items-center justify-center min-h-screen bg-gray-100 text-gray-800 transition-colors duration-400 p-5">
+    <div class="w-full max-w-md p-8 border border-gray-300 rounded-xl bg-white shadow-lg transition-colors duration-400">
+        <h2 class="text-blue-600 text-3xl font-bold text-center mb-6">Register for YoForms</h2>
+
+        <form id="registerForm" class="space-y-5">
+            <div>
+                <label for="username" class="block text-gray-700 text-sm font-semibold mb-2">Username</label>
+                <input type="text" id="username" name="username" required
+                       class="w-full p-3 border border-gray-300 rounded-lg text-base bg-white text-gray-800 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition-all">
+            </div>
+            <div>
+                <label for="email" class="block text-gray-700 text-sm font-semibold mb-2">Email</label>
+                <input type="email" id="email" name="email" required
+                       class="w-full p-3 border border-gray-300 rounded-lg text-base bg-white text-gray-800 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition-all">
+            </div>
+            <div>
+                <label for="password" class="block text-gray-700 text-sm font-semibold mb-2">Password</label>
+                <input type="password" id="password" name="password" required
+                       class="w-full p-3 border border-gray-300 rounded-lg text-base bg-white text-gray-800 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition-all">
+            </div>
+
+            <div class="country-code-section mb-6 pb-5 border-b border-gray-200" style="flex-wrap: wrap;">
+                <label for="password" class="block text-gray-700 text-sm font-semibold mb-2">Country</label>
+                <div class="country-code-input-group flex gap-3 items-center mb-4"  style="flex-wrap: wrap;">
+                    <select id="country" class="w-full p-3 border border-gray-300 rounded-lg text-base bg-white text-gray-800 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition-all"></select>
+<br>
+                    <input type="text" id="countryCodeInput" placeholder="+XXX" readonly class="w-20 flex-shrink-0 p-3 border border-gray-300 rounded-lg text-base bg-white text-gray-800 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition-all "   style="display: none !important;">
+                    <label for="password" class="block text-gray-700 text-sm font-semibold mb-2">Phone</label>
+                    <input type="tel" id="phone" placeholder="Phone Number" pattern="[0-9]{7,15}" maxlength="9" title="Phone number (7-15 digits, no spaces or dashes)"
+                           class="w-full p-3 border border-gray-300 rounded-lg text-base bg-white text-gray-800 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition-all">
+                </div>
+            </div>
+            <div>
+                <label for="confirmPassword" class="block text-gray-700 text-sm font-semibold mb-2">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required
+                       class="w-full p-3 border border-gray-300 rounded-lg text-base bg-white text-gray-800 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition-all">
+            </div>
+            <button type="submit"
+                    class="w-full bg-blue-600 text-white font-bold py-3 px-5 rounded-lg cursor-pointer shadow-md hover:bg-blue-700 hover:translate-y-px transition-all">Register</button>
+        </form>
+
+        <p class="text-center text-gray-600 text-sm mt-6">
+            Already have an account? <a href="/login" class="text-blue-600 hover:underline font-semibold">Login here</a>
+        </p>
+
+        <div class="lutan-logo text-blue-600 text-2xl font-bold text-center mt-8 pt-4 border-t border-gray-200 tracking-wider">
+            Lutan Tech
+        </div>
+    </div>
+
+    <div id="customModalOverlay" class="modal-overlay">
+        <div id="customModalContent" class="modal-content">
+            <h3 id="modalTitle"></h3>
+            <p id="modalMessage"></p>
+            <button id="modalCloseButton">OK</button>
+        </div>
+    </div>
+    <script>
+        const countries = [
+            { name: "Kenya", code: "+254" },
+            { name: "United States", code: "+1" },
+            { name: "United Kingdom", code: "+44" },
+            { name: "India", code: "+91" },
+            { name: "Germany", code: "+49" },
+            { name: "France", code: "+33" },
+            { name: "South Africa", code: "+27" },
+            { name: "Canada", code: "+1" },
+            { name: "Brazil", code: "+55" },
+            { name: "Nigeria", code: "+234" },
+            { name: "Uganda", code: "+256" },
+            { name: "Tanzania", code: "+255" },
+            { name: "Rwanda", code: "+250" },
+            { name: "Japan", code: "+81" },
+            { name: "China", code: "+86" }
+            // Add more as needed
+        ];
+    
+        const countrySelect = document.getElementById('country');
+        const countryCodeInput = document.getElementById('countryCodeInput');
+    
+        // Populate the select dropdown
+        countries.forEach(country => {
+            const option = document.createElement('option');
+            option.value = country.code;
+            option.textContent = `${country.name} (${country.code})`;
+            countrySelect.appendChild(option);
+        });
+    
+        // Set default selected value (Kenya 🇰🇪 ftw 😎)
+        countrySelect.value = "+254";
+        countryCodeInput.value = "+254";
+    
+        // Update code input when country is selected
+        countrySelect.addEventListener('change', function () {
+            countryCodeInput.value = this.value;
+        });
+    </script>
+    
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const registerForm = document.getElementById('registerForm');
+            const modalOverlay = document.getElementById('customModalOverlay');
+            const modalContent = document.getElementById('customModalContent');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalCloseButton = document.getElementById('modalCloseButton');
+
+            const enableDarkMode = () => {
+                body.classList.add('dark-mode');
+                body.classList.remove('bg-gray-100', 'text-gray-800');
+                body.classList.add('bg-gray-900', 'text-gray-200');
+                document.querySelector('div.max-w-md').classList.remove('bg-white', 'border-gray-300', 'shadow-lg');
+                document.querySelector('div.max-w-md').classList.add('bg-gray-800', 'border-gray-700', 'shadow-xl');
+                document.querySelector('h2').classList.remove('text-blue-600');
+                document.querySelector('h2').classList.add('text-blue-400');
+                document.querySelectorAll('label').forEach(el => {
+                    el.classList.remove('text-gray-700');
+                    el.classList.add('text-gray-300');
+                });
+                document.querySelectorAll('input').forEach(el => {
+                    el.classList.remove('bg-white', 'border-gray-300', 'text-gray-800');
+                    el.classList.add('bg-gray-700', 'border-gray-600', 'text-gray-100');
+                });
+                document.querySelector('button').classList.remove('bg-blue-600', 'hover:bg-blue-700', 'shadow-md');
+                document.querySelector('button').classList.add('bg-blue-500', 'hover:bg-blue-600', 'shadow-lg');
+                document.querySelector('p').classList.remove('text-gray-600');
+                document.querySelector('p').classList.add('text-gray-400');
+                document.querySelector('a').classList.remove('text-blue-600');
+                document.querySelector('a').classList.add('text-blue-400');
+                document.querySelector('.lutan-logo').classList.remove('text-blue-600', 'border-gray-200');
+                document.querySelector('.lutan-logo').classList.add('text-blue-400', 'border-gray-700');
+            };
+
+            const disableDarkMode = () => {
+                body.classList.remove('dark-mode');
+                body.classList.remove('bg-gray-900', 'text-gray-200');
+                body.classList.add('bg-gray-100', 'text-gray-800');
+                document.querySelector('div.max-w-md').classList.remove('bg-gray-800', 'border-gray-700', 'shadow-xl');
+                document.querySelector('div.max-w-md').classList.add('bg-white', 'border-gray-300', 'shadow-lg');
+                document.querySelector('h2').classList.remove('text-blue-400');
+                document.querySelector('h2').classList.add('text-blue-600');
+                document.querySelectorAll('label').forEach(el => {
+                    el.classList.remove('text-gray-300');
+                    el.classList.add('text-gray-700');
+                });
+                document.querySelectorAll('input').forEach(el => {
+                    el.classList.remove('bg-gray-700', 'border-gray-600', 'text-gray-100');
+                    el.classList.add('bg-white', 'border-gray-300', 'text-gray-800');
+                });
+                document.querySelector('button').classList.remove('bg-blue-500', 'hover:bg-blue-600', 'shadow-lg');
+                document.querySelector('button').classList.add('bg-blue-600', 'hover:bg-blue-700', 'shadow-md');
+                document.querySelector('p').classList.remove('text-gray-400');
+                document.querySelector('p').classList.add('text-gray-600');
+                document.querySelector('a').classList.remove('text-blue-400');
+                document.querySelector('a').classList.add('text-blue-600');
+                document.querySelector('.lutan-logo').classList.remove('text-blue-400', 'border-gray-700');
+                document.querySelector('.lutan-logo').classList.add('text-blue-600', 'border-gray-200');
+            };
+
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                enableDarkMode();
+            } else {
+                disableDarkMode();
+            }
+
+            const customModal = (message, type) => {
+                modalMessage.textContent = message;
+                modalContent.classList.remove('success', 'error');
+                if (type === 'success') {
+                    modalTitle.textContent = 'Success!';
+                    modalContent.classList.add('success');
+                } else {
+                    modalTitle.textContent = 'Error!';
+                    modalContent.classList.add('error');
+                }
+                modalOverlay.classList.add('show');
+
+                setTimeout(() => {
+                    modalOverlay.classList.remove('show');
+                }, 3000);
+            };
+
+            modalCloseButton.addEventListener('click', () => {
+                modalOverlay.classList.remove('show');
+            });
+            registerForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value; 
+            const password = document.getElementById('password').value;
+            const code = document.getElementById('countryCodeInput').value;
+            const number = document.getElementById('phone').value;
+            const fullNumber = `${code}${number}`;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                customModal('Passwords do not match!', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch('http://127.0.0.1:5000/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: username,
+                        email: email, 
+                        phone:fullNumber,
+                        password: password 
+                    })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    customModal(data.error || 'Registration failed', 'error');
+                    return;
+                }
+
+                customModal(data.message || 'Registration successful!', 'success');
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
+
+            } catch (err) {
+                console.error('Registration error:', err);
+                customModal('Something went wrong! Try again later.', 'error');
+            }
+        });
+
+            });
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YoForms - Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.4s, color 0.4s;
+        }
+
+        .hero-section {
+            background-image: url('https://i.ibb.co/9m4yrD9M/image.png'); /* Placeholder image */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Parallax effect */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+            padding: 2rem;
+            background-color: #0000009e;
+    background-blend-mode: multiply;
+            position: relative;
+        }
+
+        .what-we-do-section {
+            /* background-image: url('https://i.ibb.co/9m4yrD9M/image.png');  */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Parallax effect */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            position: relative;
+            background-color: #ffffff;
+    background-blend-mode: multiply;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.278);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: rgb(255, 255, 255) !important;
+            padding: 2.5rem;
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+            transition: background 0.4s, border-color 0.4s, color 0.4s;
+        }
+
+        .feature-card {
+            background: rgb(255, 255, 255);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: rgb(0, 0, 0) !important;
+            padding: 2rem;
+            text-align: center;
+            transition: background 0.4s, border-color 0.4s, color 0.4s;
+        }
+        body.dark-mode .footer{
+            background: black !important;
+        }
+
+        body.dark-mode .glass-card{
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fcfcfc !important;
+        }
+        body.dark-mode .feature-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff !important;
+        }
+        .lutan-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        body.dark-mode .lutan-logo {
+            color: #88b0ff;
+            border-top-color: #5a5a7a;
+        }
+
+        body.dark-mode {
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+        }
+        body.dark-mode .what-we-do-section{
+            background: black;
+        }
+
+        body.dark-mode header {
+            background-color: #2e2e4a;
+            border-color: #4a4a6e;
+        }
+
+        body.dark-mode header a {
+            color: #88b0ff;
+        }
+
+        body.dark-mode header a:hover {
+            color: #6a8eff;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+        .slider.round {
+            border-radius: 34px;
+        }
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <header class="bg-white shadow-md py-4 px-6 flex justify-between items-center border-b border-gray-200 transition-colors duration-400">
+        <div class="text-blue-600 text-2xl font-bold">YoForms</div>
+        <nav class="flex items-center space-x-6">
+            <a href="/login" class="text-gray-700 hover:text-blue-600 font-semibold flex items-center transition-colors duration-200">
+                <i class="fas fa-sign-in-alt mr-2"></i>Login
+            </a>
+            <a href="/register" class="text-gray-700 hover:text-blue-600 font-semibold flex items-center transition-colors duration-200">
+                <i class="fas fa-user-plus mr-2"></i>Register
+            </a>
+        </nav>
+    </header>
+
+    <main class="flex-grow">
+        <section class="hero-section">
+            <div class="glass-card">
+                <h1 class="text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-lg">YoForms</h1>
+                <p class="text-xl md:text-2xl font-medium drop-shadow-md">Forms with brains, not just boxes</p>
+            </div>
+        </section>
+
+        <section class="what-we-do-section">
+            <div class="max-w-6xl mx-auto px-4">
+                <h2 class="text-4xl font-bold text-white mb-12 text-center drop-shadow-lg bg-black">What We Do?</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="feature-card">
+                        <i class="fas fa-edit text-5xl text-blue-300 mb-4"></i>
+                        <h3 class="text-2xl font-semibold mb-3">Intuitive Form Builder</h3>
+                        <p class="text-lg">Design beautiful and functional forms with our easy-to-use drag-and-drop interface.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-poll text-5xl text-blue-300 mb-4"></i>
+                        <h3 class="text-2xl font-semibold mb-3">Advanced Survey Tools</h3>
+                        <p class="text-lg">Create detailed surveys with various question types and logic flows for in-depth insights.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-users-cog text-5xl text-blue-300 mb-4"></i>
+                        <h3 class="text-2xl font-semibold mb-3">Effortless Registration</h3>
+                        <p class="text-lg">Manage event registrations, user sign-ups, and more with streamlined forms.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-mobile-alt text-5xl text-blue-300 mb-4"></i>
+                        <h3 class="text-2xl font-semibold mb-3">Responsive Design</h3>
+                        <p class="text-lg">Your forms will look great and function perfectly on any device, from desktops to mobiles.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-bar text-5xl text-blue-300 mb-4"></i>
+                        <h3 class="text-2xl font-semibold mb-3">Data Collection & Analysis</h3>
+                        <p class="text-lg">Collect responses securely and gain valuable insights with built-in analytics.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-cogs text-5xl text-blue-300 mb-4"></i>
+                        <h3 class="text-2xl font-semibold mb-3">Customizable & Integratable</h3>
+                        <p class="text-lg">Tailor forms to your brand and integrate seamlessly with your existing workflows.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class=" py-6 px-6 text-center border-t border-gray-200 transition-colors duration-400">
+        <div class="lutan-logo">
+            Lutan Tech
+        </div>
+        <p class="text-gray-600 text-sm mt-2 transition-colors duration-400">&copy; 2025 YoForms. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const header = document.querySelector('header');
+            const navLinks = document.querySelectorAll('header nav a');
+            const footerText = document.querySelector('footer p');
+            const lutanLogo = document.querySelector('.lutan-logo');
+            const glassCards = document.querySelectorAll('.glass-card, .feature-card');
+
+            const enableDarkMode = () => {
+                body.classList.add('dark-mode');
+                body.classList.remove('bg-gray-100', 'text-gray-800');
+                body.classList.add('bg-gray-900', 'text-gray-200');
+
+                header.classList.remove('bg-white', 'border-gray-200', 'shadow-md');
+                header.classList.add('bg-gray-800', 'border-gray-700', 'shadow-xl');
+                const headerBrand = header.querySelector('.text-blue-600');
+                if (headerBrand) {
+                    headerBrand.classList.remove('text-blue-600');
+                    headerBrand.classList.add('text-blue-400');
+                }
+                
+
+                navLinks.forEach(link => {
+                    link.classList.remove('text-gray-700', 'hover:text-blue-600');
+                    link.classList.add('text-gray-300', 'hover:text-blue-400');
+                });
+
+                footerText.classList.remove('text-gray-600');
+                footerText.classList.add('text-gray-400');
+
+                lutanLogo.classList.remove('text-blue-600', 'border-gray-200');
+                lutanLogo.classList.add('text-blue-400', 'border-gray-700');
+
+                glassCards.forEach(card => {
+                    card.classList.remove('bg-white', 'text-white');
+                    card.classList.add('bg-black', 'text-gray-200');
+                    card.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+                    card.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                });
+
+            };
+
+            const disableDarkMode = () => {
+                body.classList.remove('dark-mode');
+                body.classList.remove('bg-gray-900', 'text-gray-200');
+                body.classList.add('bg-gray-100', 'text-gray-800');
+
+                header.classList.remove('bg-gray-800', 'border-gray-700', 'shadow-xl');
+                header.classList.add('bg-white', 'border-gray-200', 'shadow-md');
+                const headerBrand = header.querySelector('.text-blue-400');
+                if (headerBrand) {
+                    headerBrand.classList.remove('text-blue-400');
+                    headerBrand.classList.add('text-blue-600'); 
+                }
+
+                navLinks.forEach(link => {
+                    link.classList.remove('text-gray-300', 'hover:text-blue-400');
+                    link.classList.add('text-gray-700', 'hover:text-blue-600');
+                });
+
+                footerText.classList.remove('text-gray-400');
+                footerText.classList.add('text-gray-600');
+
+                lutanLogo.classList.remove('text-blue-400', 'border-gray-700');
+                lutanLogo.classList.add('text-blue-600', 'border-gray-200');
+
+                glassCards.forEach(card => {
+                    card.classList.remove('bg-black', 'text-gray-200');
+                    card.classList.add('bg-white', 'text-white'); 
+                    card.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                    card.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                });
+            };
+
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                enableDarkMode();
+            } else {
+                disableDarkMode();
+            }
+        });
+    </script>
+</body>
+</html>

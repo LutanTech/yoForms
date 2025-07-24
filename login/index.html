@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YoForms - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="../assets/cdn/tailwind.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+        .slider.round {
+            border-radius: 34px;
+        }
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease-in-out;
+            position: relative;
+            color: #333; /* Default text color for modal */
+        }
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+        .modal-content.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .modal-content.info {
+            background-color: #84d4ff;
+            color: rgb(0, 0, 0);
+        }
+        .modal-content.error {
+            background-color: #f44336;
+            color: white;
+        }
+        :disabled{
+            cursor: not-allowed !important;
+            background: grey !important;
+        }
+        .modal-content h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .modal-content p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .modal-content button {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .modal-content button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        #modalCloseButton{
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: #0000 !important;
+        border: 0 !important;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-inter flex items-center justify-center min-h-screen bg-gray-100 text-gray-800 transition-colors duration-400 p-5">
+    <div class="w-full max-w-md p-8 border border-gray-300 rounded-xl bg-white shadow-lg transition-colors duration-400">
+        <!-- Dark mode toggle button removed from here -->
+        <h2 class="text-blue-600 text-3xl font-bold text-center mb-6">Login to YoForms</h2>
+
+        <form id="loginForm" class="space-y-5">
+            <div>
+                <label for="email" class="block text-gray-700 text-sm font-semibold mb-2">Email or Username</label>
+                <input type="text" id="email" name="email" required
+                       class="w-full p-3 border border-gray-300 rounded-lg text-base bg-white text-gray-800 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition-all">
+            </div>
+            <div>
+                <label for="password" class="block text-gray-700 text-sm font-semibold mb-2">Password</label>
+                <input type="password" id="password" name="password" required
+                       class="w-full p-3 border border-gray-300 rounded-lg text-base bg-white text-gray-800 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition-all">
+            </div>
+            <button type="submit"
+                    class="w-full bg-blue-600 text-white font-bold py-3 px-5 rounded-lg cursor-pointer shadow-md hover:bg-blue-700 hover:translate-y-px transition-all s_btn">Login</button>
+        </form>
+
+        <p class="text-center text-gray-600 text-sm mt-6">
+            Don't have an account? <a href="/register" class="text-blue-600 hover:underline font-semibold">Register here</a>
+        </p>
+
+        <div class="lutan-logo text-blue-600 text-2xl font-bold text-center mt-8 pt-4 border-t border-gray-200 tracking-wider">
+            Lutan Tech
+        </div>
+    </div>
+    <div id="customModalOverlay" class="modal-overlay">
+        <div id="customModalContent" class="modal-content">
+            <h3 id="modalTitle"></h3>
+            <p id="modalMessage"></p>
+            <button id="modalCloseButton">X</button>
+        </div>
+    </div>
+    <script>
+            const modalOverlay = document.getElementById('customModalOverlay');
+            const modalContent = document.getElementById('customModalContent');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalCloseButton = document.getElementById('modalCloseButton');
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const loginForm = document.getElementById('loginForm');
+            
+
+            const enableDarkMode = () => {
+                body.classList.add('dark-mode');
+                body.classList.remove('bg-gray-100', 'text-gray-800');
+                body.classList.add('bg-gray-900', 'text-gray-200');
+                document.querySelector('div.max-w-md').classList.remove('bg-white', 'border-gray-300', 'shadow-lg');
+                document.querySelector('div.max-w-md').classList.add('bg-gray-800', 'border-gray-700', 'shadow-xl');
+                document.querySelector('h2').classList.remove('text-blue-600');
+                document.querySelector('h2').classList.add('text-blue-400');
+                document.querySelectorAll('label').forEach(el => {
+                    el.classList.remove('text-gray-700');
+                    el.classList.add('text-gray-300');
+                });
+                document.querySelectorAll('input').forEach(el => {
+                    el.classList.remove('bg-white', 'border-gray-300', 'text-gray-800');
+                    el.classList.add('bg-gray-700', 'border-gray-600', 'text-gray-100');
+                });
+                document.querySelector('button').classList.remove('bg-blue-600', 'hover:bg-blue-700', 'shadow-md');
+                document.querySelector('button').classList.add('bg-blue-500', 'hover:bg-blue-600', 'shadow-lg');
+                document.querySelector('p').classList.remove('text-gray-600');
+                document.querySelector('p').classList.add('text-gray-400');
+                document.querySelector('a').classList.remove('text-blue-600');
+                document.querySelector('a').classList.add('text-blue-400');
+                document.querySelector('.lutan-logo').classList.remove('text-blue-600', 'border-gray-200');
+                document.querySelector('.lutan-logo').classList.add('text-blue-400', 'border-gray-700');
+            };
+
+            const disableDarkMode = () => {
+                body.classList.remove('dark-mode');
+                body.classList.remove('bg-gray-900', 'text-gray-200');
+                body.classList.add('bg-gray-100', 'text-gray-800');
+                document.querySelector('div.max-w-md').classList.remove('bg-gray-800', 'border-gray-700', 'shadow-xl');
+                document.querySelector('div.max-w-md').classList.add('bg-white', 'border-gray-300', 'shadow-lg');
+                document.querySelector('h2').classList.remove('text-blue-400');
+                document.querySelector('h2').classList.add('text-blue-600');
+                document.querySelectorAll('label').forEach(el => {
+                    el.classList.remove('text-gray-300');
+                    el.classList.add('text-gray-700');
+                });
+                document.querySelectorAll('input').forEach(el => {
+                    el.classList.remove('bg-gray-700', 'border-gray-600', 'text-gray-100');
+                    el.classList.add('bg-white', 'border-gray-300', 'text-gray-800');
+                });
+                document.querySelector('button').classList.remove('bg-blue-500', 'hover:bg-blue-600', 'shadow-lg');
+                document.querySelector('button').classList.add('bg-blue-600', 'hover:bg-blue-700', 'shadow-md');
+                document.querySelector('p').classList.remove('text-gray-400');
+                document.querySelector('p').classList.add('text-gray-600');
+                document.querySelector('a').classList.remove('text-blue-400');
+                document.querySelector('a').classList.add('text-blue-600');
+                document.querySelector('.lutan-logo').classList.remove('text-blue-400', 'border-gray-700');
+                document.querySelector('.lutan-logo').classList.add('text-blue-600', 'border-gray-200');
+            };
+
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                enableDarkMode();
+            } else {
+                disableDarkMode();
+            }
+
+            loginForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                customModal('Loging in...', 'info', 1000);
+                Login(email, password)
+                loginForm.querySelector('.s_btn').setAttribute('disabled', 'true')
+                
+
+            });
+        });
+        async function Login(email, password) {
+    try {
+        const res = await fetch('http://127.0.0.1:5000/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,      
+                password: password  
+            })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || data.error) {
+            customModal(data.error || 'Something went wrong 😬', 'error', 1000);
+            document.getElementById('loginForm').querySelector('.s_btn').removeAttribute('disabled')
+
+        } else {
+            localStorage.setItem('blob', data.blob)
+            localStorage.setItem('id', data.id)
+            customModal(data.message || 'Login successful 🎉', 'success');
+            window.location.href = '/dashboard'
+        }
+    } catch (err) {
+        console.error('Login failed:', err);
+        document.getElementById('loginForm').querySelector('.s_btn').removeAttribute('disabled')
+        customModal('Network error or server is offline 😵‍💫', 'error');
+    }
+}
+
+        const customModal = (message, type, timeout) => {
+                modalMessage.textContent = message;
+                modalContent.classList.remove('success', 'error');
+                if (type === 'success') {
+                    modalTitle.textContent = 'Success!';
+                    modalContent.classList.add('success');
+                }
+                else if (type === 'info') {
+                    modalTitle.textContent = 'Info';
+                    modalContent.classList.add('info');
+                } else {
+                    modalTitle.textContent = 'Error!';
+                    modalContent.classList.add('error');
+                }
+                modalOverlay.classList.add('show');
+
+                if(!timeout){
+                setTimeout(() => {
+                    modalOverlay.classList.remove('show');
+                }, 5000);
+            }
+            };
+
+            modalCloseButton.addEventListener('click', () => {
+                modalOverlay.classList.remove('show');
+            });
+    </script>
+</body>
+</html>

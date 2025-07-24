@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>yoforms</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="../assets/cdn/tailwind.js"></script>
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #f0f4f8; 
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; 
+            min-height: 100vh;
+            margin: 0 !important;
+        }
+        .container {
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem; 
+            width: 100%;
+        }
+        .loading-spinner {
+            border: 4px solid rg ba(0, 0, 0, 0.1);
+            border-left-color: #3b82f6; /* blue-500 */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .form-element{
+            cursor:text !important;
+        }
+        h1{
+            font-size: xx-large !important;
+            font-weight: 900 !important;
+            width: 100% !important;
+            text-align: center !important;
+        }
+        #formContent{
+        width: 100% !important;
+        max-width: none;
+        min-width: 300px;
+        }
+        .submitBtn{
+            margin: 10px auto !important;
+            background: rgb(4, 188, 4);
+            display: flex;
+            &:hover{
+                background: green;
+            }
+        }
+        .footerInfo{
+            width: 100% !important;
+            flex-grow: 1 !important;
+            text-align: center !important;
+            display: flex;
+            justify-content: center;
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-6 text-center">YoForm</h1>
+        <div id="loading" class="flex flex-col items-center justify-center p-8">
+            <div class="loading-spinner mb-4"></div>
+            <p class="text-gray-600 text-lg">Loading form...</p>
+        </div>
+        <div id="formContent" class="hidden">
+        </div>
+        <div id="errorMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Error!</strong>
+            <span class="block sm:inline" id="errorText"></span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const BASE_URL = 'http://127.0.0.1:5000'
+        
+            const formContentDiv = document.getElementById('formContent');
+            const loadingDiv = document.getElementById('loading');
+            const errorMessageDiv = document.getElementById('errorMessage');
+            const errorTextSpan = document.getElementById('errorText');
+        
+            const showError = (message) => {
+                loadingDiv.classList.add('hidden');
+                formContentDiv.classList.add('hidden');
+                errorMessageDiv.classList.remove('hidden');
+                errorTextSpan.innerHTML = message;
+            };
+        
+            const urlParams = new URLSearchParams(window.location.search);
+            const formId = urlParams.get('id');
+        
+            if (!formId) {
+                showError(`Form ID not found in URL. Provide it like <code>?id=YOUR_FORM_ID</code>`);
+                return;
+            }
+        
+            try {
+                const response = await fetch(`${BASE_URL}/api/get-form/${formId}`);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+        
+                const data = await response.json();
+                if (data.form && data.form.html) {
+                    const html = `
+                    <h1>${data.form.name}</h1>
+                        <div class="form-wrapper">${data.form.html}</div>
+                        <p class="mt-6 text-center">
+                            <button class="submitBtn bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-green-700" 
+                                    data-phone="${data.form.phone}" id="sendViaWhatsapp">Submit via WhatsApp</button>
+                        </p>
+                        <footer class="mt-6 text-center text-gray-500 text-sm italic">
+                            Created using <a class="text-blue-600 hover:underline" href="https://yo-forms.free.nf/">yoForms</a> &copy; 2025
+                        </footer>
+                    `;
+                    formContentDiv.innerHTML = html;
+                    loadingDiv.classList.add('hidden');
+                    formContentDiv.classList.remove('hidden');
+        
+                    // log('json', data.form.id);
+        
+                    document.getElementById('sendViaWhatsapp').addEventListener('click', async () => {
+                    const inputs = document.querySelectorAll('.form-element input');
+                    let message = '';
+                    let labelData = {};
+
+                    inputs.forEach(input => {
+                        const label = document.querySelector(`label[for="${input.id}"]`);
+                        const labelText = label ? label.textContent.trim().replace(/[:：]/g, '') : input.id;
+                        const value = input.value.trim();
+                        if (value) {
+                            message += `*${labelText}::* ${value}\n`;
+                            labelData[labelText] = value;
+                        }
+                    });
+
+                    // 🔐 Get form ID from URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const formId = urlParams.get('id') || 'unknownForm';
+
+                    await fetch(`${BASE_URL}/api/save-submission`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            user_id: 'anonymousUser', 
+                            form_id: formId,
+                            data: labelData
+                        })
+                    }).catch(err => console.error('Submission save error:', err));
+
+                    // 📤 Now send to WhatsApp
+                    const fullNumber = document.getElementById('sendViaWhatsapp').getAttribute('data-phone');
+                    if (!fullNumber) {
+                        alert('Phone number missing!');
+                        return;
+                    }
+
+                    const whatsappUrl = `https://api.whatsapp.com/send/?phone=${fullNumber.replace(/\+/g, '')}&text=${encodeURIComponent(message)}`;
+                    window.open(whatsappUrl, '_blank');
+                });
+
+        
+                } else {
+                    showError('Form data or HTML content not found in the response.');
+                }
+        
+            } catch (error) {
+                console.error('Failed to fetch form:', error);
+                showError(`
+                    <div class="rounded-lg border border-red-300 bg-red-50 p-4 shadow-md animate-shake">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-6 h-6 text-red-600 animate-ping-slow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <div class="text-red-800 font-semibold text-base">
+                                🚨 <strong>${error.message}</strong><br>
+                                <span class="text-sm text-red-600 opacity-80">Try checking the link or reloading the page</span>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            }
+        });
+        </script>
+        </body>
+        </html>
+        
+
+</body>
+</html>

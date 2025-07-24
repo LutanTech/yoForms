@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YoForms - Analytics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+  <header class="bg-white shadow-md py-4 px-6 flex justify-between items-center border-b border-gray-200">
+    <div class="text-blue-600 text-2xl font-bold">YoForms Analytics</div>
+    <nav>
+      <a href="/dashboard" class="text-gray-700 hover:text-blue-600 font-semibold">
+        <i class="fas fa-home mr-2"></i>Dashboard
+      </a>
+    </nav>
+  </header>
+
+  <main class="flex-grow p-4">
+    <h1 class="text-3xl font-bold text-center mb-6">Analytics for <span id="idDisplay" class="text-blue-600">N/A</span></h1>
+
+    <div class="max-w-7xl mx-auto flex flex-col gap-10 md:flex-row md:gap-6">
+      <!-- Charts Container -->
+      <div class="flex-1 space-y-10">
+        <!-- Visitors Last 7 Days -->
+        <div class="bg-white shadow rounded-lg p-6">
+          <h2 class="text-xl font-semibold mb-2">Visitors Last 7 Days</h2>
+          <label class="font-medium mr-2">Chart Type:</label>
+          <select id="graphType7" class="p-2 border rounded mb-4">
+            <option value="bar">Bar</option>
+            <option value="line">Line</option>
+            <option value="pie">Pie</option>
+          </select>
+          <canvas id="chart7" height="150"></canvas>
+        </div>
+
+        <!-- Visitors Last 30 Days -->
+        <div class="bg-white shadow rounded-lg p-6">
+          <h2 class="text-xl font-semibold mb-2">Visitors Last 30 Days</h2>
+          <label class="font-medium mr-2">Chart Type:</label>
+          <select id="graphType30" class="p-2 border rounded mb-4">
+            <option value="bar">Bar</option>
+            <option value="line">Line</option>
+            <option value="pie">Pie</option>
+          </select>
+          <canvas id="chart30" height="150"></canvas>
+        </div>
+      </div>
+
+      <!-- Submissions Section -->
+      <div class="flex-1 bg-white shadow rounded-lg p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold">Submissions</h2>
+          <select id="viewModeSelect" class="p-2 border rounded">
+            <option value="cards">Card View</option>
+            <option value="table">Table View</option>
+          </select>
+        </div>
+        <div id="submissionsContainer"></div>
+      </div>
+    </div>
+
+    <div id="errorMessage" class="hidden text-red-600 text-center mt-6"></div>
+  </main>
+
+  <footer class="bg-white py-6 text-center border-t border-gray-200">
+    <div class="text-blue-600 text-2xl font-bold">Lutan Tech</div>
+    <p class="text-gray-600 text-sm mt-2">&copy; 2025 YoForms. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const BASE_URL = 'http://127.0.0.1:5000';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const id = new URLSearchParams(window.location.search).get('id') || localStorage.getItem('id');
+      const idDisplay = document.getElementById('idDisplay');
+      const errorDiv = document.getElementById('errorMessage');
+
+      const chartType7 = document.getElementById('graphType7');
+      const chartType30 = document.getElementById('graphType30');
+      const ctx7 = document.getElementById('chart7').getContext('2d');
+      const ctx30 = document.getElementById('chart30').getContext('2d');
+
+      idDisplay.textContent = id || 'N/A';
+
+      let chart7, chart30;
+
+      async function fetchData() {
+        try {
+          const res = await fetch(`${BASE_URL}/get_logs/${id}`);
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.message || 'Failed to fetch logs');
+          return data.logs || [];
+        } catch (err) {
+          errorDiv.classList.remove('hidden');
+          errorDiv.textContent = `Error: ${err.message}`;
+          return [];
+        }
+      }
+
+      function getLogData(logs, days) {
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - days);
+        const filtered = logs.filter(log => new Date(log.created) >= cutoff);
+        const countByForm = {};
+        filtered.forEach(log => {
+          if (!countByForm[log.form_id]) countByForm[log.form_id] = 0;
+          countByForm[log.form_id]++;
+        });
+        return {
+          labels: Object.keys(countByForm),
+          counts: Object.values(countByForm)
+        };
+      }
+
+      function renderChart(ctx, data, chartType, title) {
+        return new Chart(ctx, {
+          type: chartType,
+          data: {
+            labels: data.labels,
+            datasets: [{
+              label: title,
+              data: data.counts,
+              backgroundColor: '#3b82f6',
+              borderColor: '#2563eb',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: chartType !== 'pie' ? {
+              y: { beginAtZero: true }
+            } : {}
+          }
+        });
+      }
+
+      const updateCharts = async () => {
+        const logs = await fetchData();
+        const data7 = getLogData(logs, 7);
+        const data30 = getLogData(logs, 30);
+
+        if (chart7) chart7.destroy();
+        if (chart30) chart30.destroy();
+
+        chart7 = renderChart(ctx7, data7, chartType7.value, 'Last 7 Days');
+        chart30 = renderChart(ctx30, data30, chartType30.value, 'Last 30 Days');
+      };
+
+      chartType7.addEventListener('change', updateCharts);
+      chartType30.addEventListener('change', updateCharts);
+
+      await updateCharts();
+    });
+  </script>
+
+  <script type="module">
+    document.addEventListener('DOMContentLoaded', async () => {
+      const BASE_URL = 'http://127.0.0.1:5000';
+      const id = localStorage.getItem('id');
+      const submissionsContainer = document.getElementById('submissionsContainer');
+      const viewModeSelect = document.getElementById('viewModeSelect');
+
+      let currentSubmissions = [];
+
+      async function fetchSubmissions() {
+        try {
+          const res = await fetch(`${BASE_URL}/api/get-submissions/${id}`);
+          const data = await res.json();
+          return data.submissions || [];
+        } catch (err) {
+          return [];
+        }
+      }
+
+      function renderSubmissions(submissions, mode = 'table') {
+        if (!submissions.length) {
+          submissionsContainer.innerHTML = `<p class="text-center text-gray-500">No submissions yet 🤪</p>`;
+          return;
+        }
+
+        const grouped = {};
+        submissions.forEach(sub => {
+          const formName = sub.form || 'Untitled';
+          const fieldKeys = Object.keys(sub.data).sort().join('|');
+          const groupKey = `${formName}__${fieldKeys}`;
+
+          if (!grouped[groupKey]) grouped[groupKey] = { formName, headers: Object.keys(sub.data), items: [] };
+          grouped[groupKey].items.push(sub);
+        });
+
+        let html = '';
+
+        Object.entries(grouped).forEach(([groupKey, { formName, headers, items }]) => {
+          html += `<h3 class="text-lg font-semibold mt-6 mb-2 text-blue-600">${formName}</h3>`;
+
+          if (mode === 'table') {
+            const rows = items.map(sub => `
+              <tr class="border-b">
+                ${headers.map(h => `<td class="px-4 py-2">${sub.data[h] || ''}</td>`).join('')}
+              </tr>
+            `).join('');
+
+            html += `
+              <div class="overflow-x-auto mb-4">
+                <table class="min-w-full text-sm text-left border border-gray-300">
+                  <thead class="bg-blue-100">${headers.map(h => `<th class="px-4 py-2">${h}</th>`).join('')}</thead>
+                  <tbody>${rows}</tbody>
+                </table>
+              </div>
+            `;
+          } else {
+            html += items.map(sub => `
+              <div class="bg-white border rounded shadow p-4 mb-4">
+                ${Object.entries(sub.data).map(([key, val]) => `
+                  <p><span class="font-semibold">${key}:</span> ${val}</p>
+                `).join('')}
+                <p class="text-sm text-gray-400 mt-2">🕒 ${new Date(sub.timestamp).toLocaleString()}</p>
+              </div>
+            `).join('');
+          }
+        });
+
+        submissionsContainer.innerHTML = html;
+      }
+
+      viewModeSelect.addEventListener('change', () => {
+        renderSubmissions(currentSubmissions, viewModeSelect.value);
+      });
+
+      currentSubmissions = await fetchSubmissions();
+      renderSubmissions(currentSubmissions, viewModeSelect.value);
+    });
+  </script>
+</body>
+</html>
