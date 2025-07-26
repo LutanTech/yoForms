@@ -90,10 +90,15 @@ class FormSubmission(db.Model):
 
     def to_dict(self):
         form = PublishedForm.query.filter_by(id=self.form_id).first()
+        name = ''
+        if form:
+            name = form.name
+        else:
+            name = 'Unknown Form'
         return {
             "id": self.id,
             "user_id": self.user_id,
-            "form": form.name,
+            "form": name,
             "data": self.data,
             "timestamp": self.timestamp.isoformat()
         }
@@ -283,6 +288,51 @@ def get_submissions(user_id):
     return jsonify({
         'submissions': [s.to_dict() for s in subs  ]
     })
+
+@app.route('/api/delete_form/<string:form_id>/<string:user_id>', methods=['GET'])
+def delete_form(form_id, user_id):
+    if not user_id:
+        return jsonify({'error': 'Missing user ID'}), 400
+
+    form = PublishedForm.query.filter_by(id=form_id).first()
+
+    if not form:
+        return jsonify({'error': 'Form not found'}), 404
+
+    if form.user_id != user_id:
+        return jsonify({'error': 'You do not have permission to delete this form'}), 401
+
+    try:
+        if delete_logs(form.id): 
+            db.session.delete(form)
+            db.session.commit()
+            return jsonify({'msg': 'Form deleted successfully'}), 200
+        else:
+            return jsonify({'error': 'Failed to delete associated logs'}), 500
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'A database error occurred: {str(e)}'}), 500
+
+
+def delete_logs(form_id):
+    if not form_id:
+        return False
+
+    try:
+        logs = Log.query.filter_by(form_id=form_id).all()
+        if not logs:
+            return True 
+        for log in logs:
+            db.session.delete(log)
+
+        db.session.commit() 
+        return True
+
+    except Exception as e:
+        db.session.rollback()
+        print(f'Error deleting logs: {e}')
+        return False
 
 
 if __name__ == '__main__':

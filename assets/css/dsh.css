@@ -153,7 +153,9 @@ body.dark-mode footer p {
     width: 0;
     height: 0;
 }
-
+.info{
+    background: #ce9afe;
+}
 .slider {
     position: absolute;
     cursor: pointer;
@@ -201,3 +203,65 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+.deleteOverlay{
+    background: white;
+    padding: 20px;
+    min-width: 250px;
+    height: fit-content;
+    border-radius: 10px;
+    width: 90%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    flex-direction: column;
+    max-width: 400px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    *{
+      user-select: none !important;
+    }
+    h2{
+      font-weight: 800;
+    }
+    #confirm, #reject{
+      padding: 10px;
+      color: rgb(255, 255, 255);
+      border-radius: 40px;
+      min-width: 100px;
+      &:active{
+        scale: 0.98;
+      }
+      &:hover{
+        filter: brightness(1.5);
+      }
+    }
+    #confirm{
+      background: green;
+    }
+    #reject{
+      background: rgb(255, 106, 0);
+    }
+
+  }
+  .closeDeleteOverlayBtn{
+    float: right;
+    padding: 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: red;
+    font-weight: 900;
+    cursor: pointer;
+    font-size: xx-large;
+
+  }
+  .loader{
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    z-index: 300000;
+    background: #00000038;
+    position: fixed;
+  }

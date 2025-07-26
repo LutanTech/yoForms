@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>yoforms</title>
-    <!-- Tailwind CSS CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="../assets/cdn/tailwind.js"></script>
     <style>
         body {
@@ -15,12 +15,24 @@
             align-items: flex-start; 
             min-height: 100vh;
             margin: 0 !important;
+            flex-wrap: wrap;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: stretch;
+        }
+        header{
+            width: 100%;
         }
         .container {
-            border-radius: 0.75rem; 
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             padding: 2.5rem; 
             width: 100%;
+            min-height: 90vh !important;
+            background-size: cover;
+            background-repeat: no-repeat;
+            backdrop-filter: blur(5px);
+            background-blend-mode: multiply;
+            background: linear-gradient(to top, rgba(0, 128, 0, 0.207), rgba(255, 255, 0, 0.238), rgba(255, 0, 0, 0.129), rgba(0, 0, 255, 0.204), rgba(128, 0, 128, 0.193));
         }
         .loading-spinner {
             border: 4px solid rg ba(0, 0, 0, 0.1);
@@ -64,11 +76,45 @@
             justify-content: center;
 
         }
+        .form-element{
+            border: 0 !important;
+        }
+        .form-element h1,
+        .form-element h2,
+        .form-element h3{
+            font-weight: 900 !important;
+            text-align: left !important;
+        }
+        .form-element h3{
+            font-size: small !important;
+        }
+        .form-element h2{
+            font-size: large !important;
+        }
+        .form-element h1 {
+            font-size: x-large !important;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="text-3xl font-extrabold text-gray-900 mb-6 text-center">YoForm</h1>
+    <header style="align-items: center;"  class="header bg-white shadow-md py-4 px-6 flex justify-between items-center border-b border-gray-200 transition-colors duration-400">
+        <div class="text-blue-600 text-2xl font-bold" onclick="window.location.href='/'" style="cursor: pointer;">YoForms</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" id="darkModeToggle">
+          <i class="fas fa-sun">_</i>
+  </div>
+        <nav class="flex items-center space-x-6">
+          
+          <div class="menu-icon">
+            <div class="menu-bars">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+
+        </nav>
+        </header>
+    <div class="container" >
         <div id="loading" class="flex flex-col items-center justify-center p-8">
             <div class="loading-spinner mb-4"></div>
             <p class="text-gray-600 text-lg">Loading form...</p>
@@ -80,9 +126,12 @@
             <span class="block sm:inline" id="errorText"></span>
         </div>
     </div>
-
+    <footer class="mt-6 text-center text-gray-500 text-sm italic" style="width: 100%; background: lightgray;padding: 10px 0;">
+        Created using <a class="text-blue-600 hover:underline" href="https://yo-forms.free.nf/">yoForms</a> &copy; 2025
+    </footer>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+            // const BASE_URL = 'https://yoform.pythonanywhere.com'
             const BASE_URL = 'http://127.0.0.1:5000'
         
             const formContentDiv = document.getElementById('formContent');
@@ -101,7 +150,7 @@
             const formId = urlParams.get('id');
         
             if (!formId) {
-                showError(`Form ID not found in URL. Provide it like <code>?id=YOUR_FORM_ID</code>`);
+                showError(`Form ID not found in URL.`);
                 return;
             }
         
@@ -115,21 +164,20 @@
                 const data = await response.json();
                 if (data.form && data.form.html) {
                     const html = `
+                    
                     <h1>${data.form.name}</h1>
                         <div class="form-wrapper">${data.form.html}</div>
                         <p class="mt-6 text-center">
-                            <button class="submitBtn bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-green-700" 
-                                    data-phone="${data.form.phone}" id="sendViaWhatsapp">Submit via WhatsApp</button>
+                            <button class="submitBtn bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-green-700" style="max-width:fit-content" 
+                                    data-phone="${data.form.phone}" id="sendViaWhatsapp"> <i style="margin-right:10px" class="fas fa-paper-plane"></i> Submit via WhatsApp</button>
                         </p>
                         <footer class="mt-6 text-center text-gray-500 text-sm italic">
-                            Created using <a class="text-blue-600 hover:underline" href="https://yo-forms.free.nf/">yoForms</a> &copy; 2025
-                        </footer>
                     `;
                     formContentDiv.innerHTML = html;
                     loadingDiv.classList.add('hidden');
                     formContentDiv.classList.remove('hidden');
-        
-                    // log('json', data.form.id);
+                            // log('json', data.form.id);
+
         
                     document.getElementById('sendViaWhatsapp').addEventListener('click', async () => {
                     const inputs = document.querySelectorAll('.form-element input');
@@ -139,7 +187,7 @@
                     inputs.forEach(input => {
                         const label = document.querySelector(`label[for="${input.id}"]`);
                         const labelText = label ? label.textContent.trim().replace(/[:：]/g, '') : input.id;
-                        const value = input.value.trim();
+                        const value = input.value.trim().replace('on', 'Yes').replace('off', 'No');
                         if (value) {
                             message += `*${labelText}::* ${value}\n`;
                             labelData[labelText] = value;
@@ -187,12 +235,25 @@
                             <div class="text-red-800 font-semibold text-base">
                                 🚨 <strong>${error.message}</strong><br>
                                 <span class="text-sm text-red-600 opacity-80">Try checking the link or reloading the page</span>
-                            </div>
+                            </div><p>
                         </div>
+
                     </div>
+                    <p style="height:30px">
+
+                        </p>
                 `);
-            }
+            }  
+                      function log(format,id){
+      const res = fetch(`${BASE_URL}/log/${id}/${format}`)
+      .then(res=>res.json())
+      .catch(err=>{
+        console.log(err)
+      })
+      
+    }
         });
+
         </script>
         </body>
         </html>

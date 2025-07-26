@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>YoForms - Analytics</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/assets/cdn/tailwind.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -73,6 +73,7 @@
 
   <script>
     const BASE_URL = 'http://127.0.0.1:5000';
+ // const BASE_URL = 'https://yoform.pythonanywhere.com'
 
     document.addEventListener('DOMContentLoaded', async () => {
       const id = new URLSearchParams(window.location.search).get('id') || localStorage.getItem('id');

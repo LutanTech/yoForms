@@ -3,247 +3,372 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>yoForms</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<title>yoForms Form Builder</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="../assets/cdn/tailwind.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="../assets/js/alert.js" defer></script>
-<script src="../assets/js/toggle.js" defer></script>
+
 <style>
     body {
         font-family: 'Inter', sans-serif;
-        margin: 0;
-        padding: 20px;
-        display: flex;
-        gap: 20px;
-        background-color: #f0f2f5;
-        color: #333;
-        transition: background-color 0.3s, color 0.3s;
         min-height: 100vh;
-        box-sizing: border-box;
-    }
-
-    body.dark-mode {
-        background-color: #1a1a2e;
-        color: #e0e0e0;
-    }
-
-    #controls, #preview {
-        flex: 1;
+        display: flex;
+        flex-direction: column;
         padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 12px;
-        background-color: #fff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
-    }
-
-    body.dark-mode #controls,
-    body.dark-mode #preview {
-        border-color: #4a4a6e;
-        background-color: #2e2e4a;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    h2 {
-        color: #007bff;
-        margin-top: 0;
-        margin-bottom: 20px;
-    }
-
-    body.dark-mode h2 {
-        color: #88b0ff;
-    }
-
-    select, button, input[type="text"], input[type="tel"], input[type="number"], input[type="email"],
-    input[type="date"], input[type="password"], textarea {
-        margin-bottom: 15px;
-        padding: 10px;
-        width: 100%;
-        box-sizing: border-box;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 16px;
-        background-color: #fefefe;
-        color: #333;
-        transition: background-color 0.3s, border-color 0.3s, color 0.3s;
-    }
-
-    body.dark-mode select,
-    body.dark-mode button,
-    body.dark-mode input[type="text"],
-    body.dark-mode input[type="number"],
-    body.dark-mode input[type="email"],
-    body.dark-mode input[type="date"],
-    body.dark-mode input[type="password"],
-    body.dark-mode textarea, body.darkmode input[type="tel"] {
-        background-color: #3a3a5a;
-        border-color: #5a5a7a;
-        color: #e0e0e0;
-    }
-    .form-element{
-            display:flex;
-            justify-content:  flex-start;
-            align-items: center;
-            }
-
-    button {
-        background-color: #007bff;
-        width:fit-content !important;
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-        transition: background-color 0.3s, transform 0.2s;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    button:hover {
-        background-color: #0056b3;
-        transform: translateY(-1px);
-    }
-
-    body.dark-mode button {
-        background-color: #6a8eff;
-        box-shadow: 0 2px 6px (0, 0, 0, 0.3);
-    }
-
-    body.dark-mode button:hover {
-        background-color: #4a6ee0;
-    }
-
-    .form-element {
-        position: relative;
-        padding: 15px;
-        margin-bottom: 15px;
-        border: 1px dashed #e0e0e0;
-        border-radius: 8px;
-        background-color: #fdfdfd;
+        background-color: #f8fafc;
+        touch-action: pan-y;
         flex-wrap: wrap;
     }
 
-    body.dark-mode .form-element {
-        border-color: #4a4a6e;
-        background-color: #3a3a5a;
+    @media (min-width: 768px) {
+        body {
+            flex-direction: row;
+            gap: 20px;
+        }
     }
 
-    .remove-button {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: none;
-        border: none;
-        color: #dc3545;
-        font-size: 1.2em;
-        cursor: pointer;
-        padding: 5px;
-        border-radius: 50%;
-        transition: color 0.2s, background-color 0.2s;
-        z-index: 10;
+    .main-header {
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 30px;
+        text-align: center;
+        width: 100%;
     }
 
-    .remove-button:hover {
-        color: #c82333;
-        background-color: rgba(220, 53, 69, 0.1);
+    .main-header i {
+        color: #3b82f6;
+        margin-right: 10px;
     }
 
-    body.dark-mode .remove-button {
-        color: #ff7f7f;
+    #container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        width: 100%;
     }
 
-    body.dark-mode .remove-button:hover {
-        color: #ff5f5f;
-        background-color: rgba(255, 127, 127, 0.1);
-    }
-
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 60px;
-        height: 34px;
+    #elements, #formPreview {
+        flex: 1;
+        padding: 24px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        min-height: 350px;
         margin-bottom: 20px;
     }
 
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
+    @media (min-width: 768px) {
+        #elements, #formPreview {
+            margin-bottom: 0;
+        }
     }
 
-    .slider {
-        position: absolute;
+    h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2563eb;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .draggable-item {
+        padding: 12px 16px;
+        background-color: #e0f2fe;
+        border: 1px solid #90cdf4;
+        margin-bottom: 10px;
+        cursor: grab;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+        color: #2563eb;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        touch-action: none;
+    }
+    .draggable-item:hover {
+        background-color: #bfdbfe;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+    .draggable-item i {
+        font-size: 1.25em;
+        color: #1d4ed8;
+    }
+
+    .form-element {
+        margin-bottom: 15px;
+        padding: 15px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background-color: #f8fafc;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .form-element[draggable] {
+        cursor: default;
+    }
+
+    .drag-handle {
+        font-size: 1.2em;
+        color: #94a3b8;
+        cursor: grab;
+        padding: 5px;
+        margin-left: -5px;
+        align-self: center;
+        touch-action: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .drag-handle:active {
+        cursor: grabbing;
+    }
+
+
+    label[contenteditable="true"],
+    b[contenteditable="true"],
+    .main-header[contenteditable="true"],
+    h2[contenteditable="true"],
+    h3[contenteditable="true"],
+    p[contenteditable="true"],
+    strong[contenteditable="true"],
+    .form-element input[type="text"][data-builder-only="true"],
+    .form-element input:not([type="checkbox"]):not([type="radio"]):not([data-builder-only="true"]),
+    .form-element select,
+    .form-element textarea {
+        touch-action: auto;
+        -webkit-user-select: text;
+        user-select: text;
+    }
+
+
+    label[contenteditable="true"],
+    b[contenteditable="true"],
+    .main-header[contenteditable="true"],
+    h1[contenteditable="true"],
+    h2[contenteditable="true"],
+    h3[contenteditable="true"],
+    p[contenteditable="true"],
+    strong[contenteditable="true"] {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #334155;
+        padding: 4px 6px;
+        border-radius: 4px;
+        cursor: text;
+    }
+    label[contenteditable="true"]:focus,
+    b[contenteditable="true"]:focus,
+    .main-header[contenteditable="true"]:focus,
+    h1[contenteditable="true"]:focus,
+    h2[contenteditable="true"]:focus,
+    h3[contenteditable="true"]:focus,
+    p[contenteditable="true"]:focus,
+    strong[contenteditable="true"]:focus {
+        border-color: #3b82f6;
+        background-color: #e0f2fe;
+        outline: none;
+    }
+
+    .form-element-content {
+        flex-grow: 1;
+    }
+
+    .form-element input:not([type="checkbox"]):not([type="radio"]),
+    .form-element select,
+    .form-element textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        margin-top: 5px;
+        font-size: 1rem;
+        color: #334155;
+        box-sizing: border-box;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-element input:focus,
+    .form-element select:focus,
+    .form-element textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    }
+
+    .form-element input[type="checkbox"],
+    .form-element input[type="radio"] {
+        width: auto;
+        margin-right: 8px;
+    }
+.remove-element-button{
+    background: #0000 !important;
+    color: red !important;
+}
+    .form-element button {
+        width: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background-color: #22c55e;
+        color: white;
+        border: none;
+        border-radius: 6px;
         cursor: pointer;
+        font-weight: 600;
+        transition: background-color 0.2s, transform 0.1s;
+    }
+    .form-element button:hover {
+        background-color: #16a34a;
+        transform: translateY(-1px);
+    }
+    .form-element button i {
+        font-size: 1em;
+    }
+
+    #formPreview p {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 1.1rem;
+        margin-top: 100px;
+    }
+
+    .gen-btn {
+        margin: 10px 0;
+        padding: 10px 16px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: background-color 0.2s;
+    }
+    .gen-btn:hover {
+        background-color: #0056b3;
+    }
+
+    #toggleSidebar {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    @media (min-width: 768px) {
+        #toggleSidebar {
+            display: none;
+        }
+    }
+
+    @media (max-width: 768px) {
+        #elements {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 70%;
+            max-width: 300px;
+            height: 100vh;
+            background: #fff;
+            z-index: 1000;
+            transition: left 0.3s ease-in-out;
+            overflow-y: auto;
+            padding: 20px;
+            border-right: 2px solid #ccc;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        #elements.show {
+            left: 0;
+        }
+        #container {
+            flex-direction: column;
+        }
+    }
+    
+    .form-element img, .form-element iframe {
+        display: block;
+        max-width: 50%;
+        height: auto;
+        margin-top: 10px;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .drag-placeholder {
+        height: 50px;
+        background-color: #bfdbfe;
+        border: 2px dashed #3b82f6;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        transition: all 0.1s ease-in-out;
+    }
+
+    .form-element.is-dragging, .ghost-element {
+        opacity: 0.4;
+        border: 2px dashed #3b82f6;
+    }
+    .draggable-item.is-dragging-palette {
+        opacity: 0.7;
+        border: 1px dashed #3b82f6;
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+
+    .remove-element-button {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: none;
+        border: none;
+        color: #ef4444;
+        font-size: 1.1em;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 50%;
+        transition: all 0.2s;
+    }
+    .remove-element-button:hover {
+        color: #dc2626;
+        background-color: rgba(239, 68, 68, 0.1);
+    }
+    .ghost-element {
+        position: fixed;
         top: 0;
         left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        -webkit-transition: .4s;
-        transition: .4s;
-        border-radius: 34px;
-    }
-
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 26px;
-        width: 26px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        -webkit-transition: .4s;
-        transition: .4s;
-        border-radius: 50%;
-    }
-
-    input:checked + .slider {
-        background-color: #2196F3;
-    }
-
-    input:focus + .slider {
-        box-shadow: 0 0 1px #2196F3;
-    }
-
-    input:checked + .slider:before {
-        -webkit-transform: translateX(26px);
-        -ms-transform: translateX(26px);
-        transform: translateX(26px);
-    }
-
-    .slider.round {
-        border-radius: 34px;
-    }
-
-    .slider.round:before {
-        border-radius: 50%;
-    }
-
-    #liveFormPreview label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-        color: inherit;
-    }
-    #liveFormPreview input[type="checkbox"],
-    #liveFormPreview input[type="radio"] {
-        width: auto;
-        margin-right: 5px;
-    }
-    #liveFormPreview button {
-        margin-top: 10px;
-    }
-
-    .lutan-logo {
-        font-size: 24px;
-        font-weight: bold;
-        color: #007bff;
-        text-align: center;
-        margin-top: 30px;
-        padding-top: 15px;
-        border-top: 1px solid #eee;
-    }
-
-    body.dark-mode .lutan-logo {
-        color: #88b0ff;
-        border-top-color: #5a5a7a;
+        z-index: 10000;
+        pointer-events: none;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        border-radius: 8px;
+        padding: 12px 16px;
+        background-color: #e0f2fe;
+        border: 1px solid #90cdf4;
+        font-weight: 500;
+        color: #2563eb;
     }
     .modal-overlay {
             position: fixed;
@@ -324,546 +449,591 @@
         background: #0000 !important;
         border: 0 !important;
         }
+        .form-element-content h1,
+        .form-element-content h2,
+        .form-element-content h3{
+            font-weight: 900;
+            text-align: left !important;
+        }
+        .form-element-content h3{
+            font-size: small;
+        }
+        .form-element-content h2{
+            font-size: large;
+        }
+        .form-element-content h1{
+            font-size: x-large;
+        }
+
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<div id="controls">
-    <h2>Form Builder Controls</h2>
+    
+    <h1 style="justify-content: space-between; display: flex;" class="main-header"> <a style="color: blue; text-decoration: underline; font-size: x-small;" href="/dashboard/">Back</a> <t><i class="fas fa-toolbox"></i>  Form Builder</t></h1>
 
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; cursor: pointer;" id="darkModeToggle">
-            <i class="fas fa-sun"></i>
+    <button id="toggleSidebar" onclick="toggleSidebar()">
+        <i class="fas fa-plus"></i>
+    </button>
+    <div id="container" class="md:flex md:gap-5">
+        <div id="elements" class="flex-1">
+            <h2>Element Palette</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="draggable-item" draggable="true" data-type="textInput"><i class="fas fa-font"></i> Text Input</div>
+                <div class="draggable-item" draggable="true" data-type="numberInput"><i class="fas fa-hashtag"></i> Number Input</div>
+                <div class="draggable-item" draggable="true" data-type="emailInput"><i class="fas fa-at"></i> Email Input</div>
+                <div class="draggable-item" draggable="true" data-type="dateInput"><i class="fas fa-calendar-alt"></i> Date Input</div>
+                <div class="draggable-item" draggable="true" data-type="passwordInput"><i class="fas fa-key"></i> Password Input</div>
+                <div class="draggable-item" draggable="true" data-type="phoneNumberInput"><i class="fas fa-phone"></i> Phone Number</div>
+                <div class="draggable-item" draggable="true" data-type="textarea"><i class="fas fa-align-left"></i> Text Area</div>
+                <div class="draggable-item" draggable="true" data-type="checkbox"><i class="fas fa-check-square"></i> Checkbox</div>
+                <div class="draggable-item" draggable="true" data-type="radio"><i class="fas fa-dot-circle"></i> Radio Button</div>
+                <div class="draggable-item" draggable="true" data-type="select"><i class="fas fa-list-ul"></i> Dropdown</div>
+                <div class="draggable-item" draggable="true" data-type="button"><i class="fas fa-hand-pointer"></i> Button</div>
+                <div class="draggable-item" draggable="true" data-type="whatsappButton"><i class="fab fa-whatsapp"></i> WhatsApp Btn</div>
+                <div class="draggable-item" draggable="true" data-type="heading1"><i class="fas fa-heading"></i> H1 Heading</div>
+                <div class="draggable-item" draggable="true" data-type="heading2"><i class="fas fa-heading"></i> H2 Heading</div>
+                <div class="draggable-item" draggable="true" data-type="heading3"><i class="fas fa-heading"></i> H3 Heading</div>
+                <div class="draggable-item" draggable="true" data-type="paragraph"><i class="fas fa-paragraph"></i> Paragraph</div>
+                <div class="draggable-item" draggable="true" data-type="boldText"><i class="fas fa-bold"></i> Bold Text</div>
+                <div class="draggable-item" draggable="true" data-type="image"><i class="fas fa-image"></i> Image</div>
+                <div class="draggable-item" draggable="true" data-type="video"><i class="fas fa-video"></i> Video</div>
+            </div>
+        </div>
+        <div id="formPreview" class="flex-1">
+            <h3>Form Name:</h3>
+            <input type="text" id="formName" placeholder="Enter Form Name" class="mb-4">
+            <p class="initial-message">Drop elements here to build your form!</p>
+        </div>
     </div>
-
-    <h3>Form Name:</h3><p>
-    <input type="text" id="formName" placeholder="Enter Form Name"><br>
-    <h3>Add Element:</h3>
-    <select id="elementType" required>
-        <option value="">-- Select Element Type --</option>
-        <option value="phoneNumberInput">Phone Number Input</option>
-        <option value="textInput">Text Input</option>
-        <option value="numberInput">Number Input</option>
-        <option value="emailInput">Email Input</option>
-        <option value="dateInput">Date Input</option>
-        <option value="passwordInput">Password Input</option>
-        <option value="textarea">Text Area</option>
-        <option value="checkbox">Checkbox</option>
-        <option value="radio">Radio Button</option>
-        <option value="select">Dropdown (Select)</option>
-        <option value="button">Button</option>
-        <option value="heading1">Heading 1</option>
-        <option value="heading2">Heading 2</option>
-        <option value="heading3">Heading 3</option>
-        <option value="paragraph">Paragraph</option>
-        <option value="boldText">Bold Text</option>
-    </select>
-
-    <div id="elementOptions">
+    <button class="gen-btn" onclick="generateHTML()">
+        <i class="fas fa-code"></i> Publish
+    </button>
+    <div id="customModalOverlay" class="modal-overlay">
+        <div id="customModalContent" class="modal-content">
+            <h3 id="modalTitle"></h3>
+            <p id="modalMessage"></p>
+            <button id="modalCloseButton">X</button>
+        </div>
     </div>
+    <div id="optionModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50" style="z-index: 2000000;">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96 max-w-full text-gray-800">
+          <h2 class="text-xl font-bold mb-4">Customize Dropdown Options</h2>
+          <textarea id="optionInput" class="w-full border p-2 rounded h-32 resize-none" placeholder="Comma-separated like: Male, Female, Other"></textarea>
+          <div class="mt-4 flex justify-end gap-2">
+            <button onclick="closeOptionModal()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancel</button>
+            <button onclick="saveOptions()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save</button>
+          </div>
+        </div>
+      </div>
+      
+    <script>
+         const BASE_URL = 'http://127.0.0.1:5000'
+        // const BASE_URL = 'https://yoform.pythonanywhere.com'
+        const elements = document.querySelectorAll('.draggable-item');
+        const preview = document.getElementById('formPreview');
+        const sidebar = document.getElementById('elements');
+        let draggedFromPalette = null;
+        let draggedFromPreview = null;
+        let placeholder = null;
+        let ghostElement = null;
+        let currentDragType = null;
 
-    <button id="addElement">Add Element to Form</button>
+        const createElementHTML = (type) => {
+            const uniqueId = type + '_' + Date.now();
+            switch(type) {
+            case 'textInput':
+                return `<div class="form-element-content"><label contenteditable="true"><i class="fas fa-font mr-1"></i>Text</label><input type="text" id="${uniqueId}"></div>`;
 
-    <h3>Form Actions:</h3>
-    <button id="clearForm">Clear Form</button>
-    <button id="generateHTML" style="display: none;">Generate HTML Code</button>
-    <button id="publishForm">Publish Form</button>
+            case 'numberInput':
+                return `<div class="form-element-content"><label contenteditable="true"><i class="fas fa-hashtag mr-1"></i>Number</label><input type="number" id="${uniqueId}"></div>`;
 
-    <div class="lutan-logo">
-        Lutan Tech
-    </div>
-</div>
+            case 'emailInput':
+                return `<div class="form-element-content"><label contenteditable="true"><i class="fas fa-envelope mr-1"></i>Email</label><input type="email" id="${uniqueId}"></div>`;
 
-<div id="preview">
-    <h2>Form Preview</h2>
-    <form id="liveFormPreview">
-    </form>
-</div>
-<div id="customModalOverlay" class="modal-overlay">
-    <div id="customModalContent" class="modal-content">
-        <h3 id="modalTitle"></h3>
-        <p id="modalMessage"></p>
-        <button id="modalCloseButton">X</button>
-    </div>
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const elementTypeSelect = document.getElementById('elementType');
-        const elementOptionsDiv = document.getElementById('elementOptions');
-        const addElementButton = document.getElementById('addElement');
-        const liveFormPreview = document.getElementById('liveFormPreview');
-        const clearFormButton = document.getElementById('clearForm');
-        const generateHTMLButton = document.getElementById('generateHTML');
-        const publishFormButton = document.getElementById('publishForm');
-        const darkModeToggle = document.getElementById('darkModeToggle');
-  const body = document.body;
+            case 'dateInput':
+                return `<div class="form-element-content"><label contenteditable="true"><i class="fas fa-calendar-alt mr-1"></i>Date</label><input type="date" id="${uniqueId}"></div>`;
 
-        const createTextInput = (labelText = 'Text Label') => {
-            const inputId = labelText.replace(/\s/g, '_');
-            return `
-                <label for="${inputId}">${labelText}:</label><br>
-                <input type="text" id="${inputId}" placeholder="Enter text"><br>
-            `;
-        };
+            case 'passwordInput':
+                return `<div class="form-element-content"><label contenteditable="true"><i class="fas fa-lock mr-1"></i>Password</label><input type="password" id="${uniqueId}"></div>`;
 
-        const createNumberInput = (labelText = 'Number Label') => {
-            const inputId = labelText.replace(/\s/g, '_');
-            return `
-                <label for="${inputId}">${labelText}:</label><br>
-                <input type="number" id="${inputId}" placeholder="Enter number"><br>
-            `;
-        };
+            case 'phoneNumberInput':
+                return `<div class="form-element-content"><label contenteditable="true"><i class="fas fa-phone-alt mr-1"></i>Phone</label><input type="tel" maxLenght='13'  pattern="[0-9]{7,15}" id="${uniqueId}"></div>`;
 
-        const createEmailInput = (labelText = 'Email Label') => {
-            const inputId = labelText.replace(/\s/g, '_');
-            return `
-                <label for="${inputId}">${labelText}:</label><br>
-                <input type="email" id="${inputId}" placeholder="Enter email"><br>
-            `;
-        };
+            case 'textarea':
+                return `<div class="form-element-content"><label contenteditable="true"><i class="fas fa-align-left mr-1"></i>Long message</label><textarea rows="3" id="${uniqueId}"></textarea></div>`;
 
-        const createDateInput = (labelText = 'Date Label') => {
-            const inputId = labelText.replace(/\s/g, '_');
-            return `
-                <label for="${inputId}">${labelText}:</label><br>
-                <input type="date" id="${inputId}"><br>
-            `;
-        };
+            case 'checkbox':
+                return `<div class="form-element-content"><input type="checkbox" id="${uniqueId}"<label for=${uniqueId}><b contenteditable="true">Checkbox </b></label></div>`;
 
-        const createPasswordInput = (labelText = 'Password Label') => {
-            const inputId = labelText.replace(/\s/g, '_');
-            return `
-                <label for="${inputId}">${labelText}:</label><br>
-                <input type="password" id="${inputId}" placeholder="Enter password"><br>
-            `;
-        };
+            case 'radio':
+                return `<div class="form-element-content"><label><input type="radio" name="radio-group-${Date.now()}" id="${uniqueId}"><b  contenteditable="true">Option</b></label></div>`;
 
-        const createTextArea = (labelText = 'Text Area Label') => {
-            const inputId = labelText.replace(/\s/g, '_');
-            return `
-                <label for="${inputId}">${labelText}:</label><br>
-                <textarea id="${inputId}" rows="4" placeholder="Enter long text"></textarea><br>
-            `;
-        };
+            case 'select':
+                return `<div class="form-element-content">
+                    <label contenteditable="true"><i class="fas fa-caret-down mr-1"></i>Dropdown Label</label>
+                    <select id="${uniqueId}" onclick="openOptionModal(this)">
+                    <option>Option 1</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                    </select>
+                </div>`;
 
-        const createCheckbox = (labelText = 'Checkbox Label') => {
-            const inputId = labelText.replace(/\s/g, '_');
-            return `
-                <input type="checkbox" id="${inputId}">
-                <label for="${inputId}">${labelText}</label><br>
-            `;
-        };
+            case 'button':
+                return `<div class="form-element-content"><button id="${uniqueId}" contenteditable="true"><i class="fas fa-mouse-pointer mr-1"></i>Click Me</button></div>`;
 
-        const createRadioButton = (groupName = 'radioGroup', labelText = 'Radio Option') => {
-            const inputId = `${groupName.replace(/\s/g, '_')}_${labelText.replace(/\s/g, '_')}`;
-            return `
-                <input type="radio" name="${groupName.replace(/\s/g, '_')}" id="${inputId}">
-                <label for="${inputId}">${labelText}</label><br>
-            `;
-        };
+            case 'whatsappButton':
+                return `<div class="form-element-content"><button id="${uniqueId}" contenteditable="true"><i class="fab fa-whatsapp mr-1"></i>WhatsApp</button></div>`;
 
-        const createSelectInput = (labelText = 'Select Label', options = ['Option 1', 'Option 2']) => {
-            const inputId = labelText.replace(/\s/g, '_');
-            let optionsHtml = options.map(opt => `<option value="${opt.toLowerCase().replace(/\s/g, '-')}">${opt}</option>`).join('');
-            return `
-                <label for="${inputId}">${labelText}:</label><br>
-                <select id="${inputId}">${optionsHtml}</select><br>
-            `;
-        };
+            case 'heading1':
+                return `<div class="form-element-content"><h1 contenteditable="true">Heading 1</h1></div>`;
 
-        const createButton = (buttonText = 'Submit Button') => `
-            <button type="button">${buttonText}</button><br>
-        `;
+            case 'heading2':
+                return `<div class="form-element-content"><h2 contenteditable="true">Heading 2</h2></div>`;
 
-        const createHeading = (level, text = `Heading ${level} Text`) => `<h${level}>${text}</h${level}>`;
-        const createParagraph = (text = 'This is a paragraph of text.') => `<p>${text}</p>`;
-        const createBoldText = (text = 'Bold text here.') => `<strong>${text}</strong>`;
+            case 'heading3':
+                return `<div class="form-element-content"><h3 contenteditable="true">Heading 3</h3></div>`;
 
-        const createPhoneNumberInput = (labelText = 'Phone Number') => {
-            const inputId = labelText.replace(/\s/g, '_');
-            return `
-                <label for="${inputId}">${labelText}:</label><br>
-                <input type="tel" id="${inputId}" placeholder="e.g., +1234567890" pattern="[0-9]{10,15}" title="Phone number (10-15 digits, no spaces or dashes)"><br>
-            `;
-        };
+            case 'paragraph':
+                return `<div class="form-element-content"><p contenteditable="true"><i class="fas fa-paragraph mr-1"></i>This is a paragraph of text.</p></div>`;
 
-        const createWhatsAppButton = (buttonText = 'Send via WhatsApp', phoneInputId = 'phone_number_input', defaultMessage = 'Hello, I would like to inquire about your services.') => {
-            return `
-                <button type="button" class="whatsapp-send-button" data-phone-input-id="${phoneInputId}" data-default-message="${defaultMessage}">${buttonText}</button><br>
-            `;
-        };
+            case 'boldText':
+                return `<div class="form-element-content"><strong contenteditable="true">Bold Text</strong></div>`;
 
-        const renderElementOptions = (elementType) => {
-            elementOptionsDiv.innerHTML = '';
-            let html = '';
-            switch (elementType) {
-                case 'textInput':
-                case 'numberInput':
-                case 'emailInput':
-                case 'dateInput':
-                case 'passwordInput':
-                case 'textarea':
-                case 'checkbox':
-                case 'phoneNumberInput':
-                    html = `
-                        <label>Label Text:</label>
-                        <input type="text" id="labelText" placeholder="e.g., Your Name">
-                    `;
-                    break;
-                case 'radio':
-                    html = `
-                        <label>Group Name:</label>
-                        <input type="text" id="radioGroupName" placeholder="e.g., Gender">
-                        <label>Option Label:</label>
-                        <input type="text" id="radioOptionLabel" placeholder="e.g., Male">
-                    `;
-                    break;
-                case 'select':
-                    html = `
-                        <label>Label Text:</label>
-                        <input type="text" id="selectLabelText" placeholder="e.g., Choose an option">
-                        <label>Options (comma-separated):</label>
-                        <input type="text" id="selectOptions" placeholder="e.g., Red, Green, Blue">
-                    `;
-                    break;
-                case 'button':
-                    html = `
-                        <label>Button Text:</label>
-                        <input type="text" id="buttonText" placeholder="e.g., Submit">
-                    `;
-                    break;
-                case 'whatsappButton':
-                    html = `
-                        <label>Button Text:</label>
-                        <input type="text" id="whatsappButtonText" placeholder="e.g., Send Message">
-                        <label>Associated Phone Input ID (optional):</label>
-                        <input type="text" id="whatsappPhoneInputId" placeholder="e.g., phone_number_input">
-                        <label>Default Message (optional):</label>
-                        <input type="text" id="whatsappDefaultMessage" placeholder="e.g., I have a question.">
-                    `;
-                    break;
-                case 'heading1':
-                case 'heading2':
-                case 'heading3':
-                case 'paragraph':
-                case 'boldText':
-                    html = `
-                        <label>Content Text:</label>
-                        <input type="text" id="contentText" placeholder="Enter text">
-                    `;
-                    break;
+            case 'image':
+                return `<div class="form-element-content"><label contenteditable="true" data-builder-only-label="true"><i class="fas fa-image mr-1"></i>Image URL:</label><input type="text" data-builder-only="true" placeholder="Paste image URL" onblur="this.nextElementSibling.src = this.value || 'https://placehold.co/200x150/e0e0e0/000000?text=Placeholder'" value="https://placehold.co/200x150/e0e0e0/000000?text=Placeholder"><img style="width:100%;margin-top:10px;" src="https://placehold.co/200x150/e0e0e0/000000?text=Placeholder" /></div>`;
+
+            case 'video':
+                return `<div class="form-element-content"><label contenteditable="true" data-builder-only-label="true"><i class="fas fa-video mr-1"></i>Video URL:</label><input type="text" data-builder-only="true" placeholder="Paste video URL" onblur="this.nextElementSibling.src = this.value || 'https://www.youtube.com/embed/dQw4w9WgXcQ'" value="https://www.youtube.com/embed/dQw4w9WgXcQ"><iframe style="width:100%;aspect-ratio:16/9;margin-top:10px;" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe></div>`;
+
+                default:
+                    return `<div class="form-element-content"><div>Unknown Element</div></div>`;
             }
-            elementOptionsDiv.innerHTML = html;
         };
 
-        elementTypeSelect.addEventListener('change', (event) => {
-            renderElementOptions(event.target.value);
+        const createGhostElement = (originalElement) => {
+            const ghost = originalElement.cloneNode(true);
+            ghost.classList.add('ghost-element');
+            ghost.style.width = originalElement.offsetWidth + 'px';
+            ghost.style.height = originalElement.offsetHeight + 'px';
+            document.body.appendChild(ghost);
+            return ghost;
+        };
+
+        const updateGhostPosition = (e) => {
+            if (ghostElement) {
+                ghostElement.style.left = e.touches[0].clientX - ghostElement.offsetWidth / 2 + 'px';
+                ghostElement.style.top = e.touches[0].clientY - ghostElement.offsetHeight / 2 + 'px';
+            }
+        };
+
+        const clearGhost = () => {
+            if (ghostElement && ghostElement.parentNode) {
+                ghostElement.parentNode.removeChild(ghostElement);
+                ghostElement = null;
+            }
+        };
+
+        elements.forEach(el => {
+            el.addEventListener('dragstart', e => {
+                draggedFromPalette = el.dataset.type;
+                e.dataTransfer.setData('text/plain', draggedFromPalette);
+                e.target.classList.add('is-dragging-palette');
+            });
+            el.addEventListener('dragend', e => {
+                e.target.classList.remove('is-dragging-palette');
+                draggedFromPalette = null;
+            });
+
+            el.addEventListener('touchstart', e => {
+                e.preventDefault();
+                currentDragType = 'palette';
+                draggedFromPalette = el.dataset.type;
+                ghostElement = createGhostElement(el);
+                updateGhostPosition(e);
+                sidebar.classList.remove('show');
+            }, { passive: false });
+
+            el.addEventListener('touchmove', e => {
+                e.preventDefault();
+                updateGhostPosition(e);
+                const touchY = e.touches[0].clientY;
+                const afterElement = getDragAfterElement(preview, touchY);
+                if (!placeholder) {
+                    placeholder = document.createElement('div');
+                    placeholder.className = 'drag-placeholder';
+                }
+                if (afterElement == null) {
+                    preview.appendChild(placeholder);
+                } else {
+                    preview.insertBefore(placeholder, afterElement);
+                }
+            }, { passive: false });
+
+            el.addEventListener('touchend', e => {
+                e.preventDefault();
+                clearGhost();
+                if (placeholder && placeholder.parentNode) {
+                    placeholder.parentNode.removeChild(placeholder);
+                }
+                const touchY = e.changedTouches[0].clientY;
+                const previewRect = preview.getBoundingClientRect();
+
+                if (touchY > previewRect.top && touchY < previewRect.bottom &&
+                    e.changedTouches[0].clientX > previewRect.left && e.changedTouches[0].clientX < previewRect.right) {
+                    
+                    const initialMessage = preview.querySelector('.initial-message');
+                    if (initialMessage) {
+                        initialMessage.remove();
+                    }
+
+                    const type = draggedFromPalette;
+                    const elem = document.createElement('div');
+                    elem.className = 'form-element';
+                    elem.innerHTML = createElementHTML(type);
+                    elem.dataset.type = type;
+
+                    makeFormElementDraggable(elem);
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-element-button';
+                    removeBtn.innerHTML = '<i class="fas fa-times-circle"></i>';
+                    removeBtn.addEventListener('click', () => {
+                        elem.remove();
+                        if (preview.children.length === 0) {
+                            preview.innerHTML = '<p class="initial-message">Drop elements here to build your form!</p>';
+                        }
+                    });
+                    elem.appendChild(removeBtn);
+
+                    const afterElement = getDragAfterElement(preview, touchY);
+                    if (afterElement == null) {
+                        preview.appendChild(elem);
+                    } else {
+                        preview.insertBefore(elem, afterElement);
+                    }
+
+                }
+                draggedFromPalette = null;
+                currentDragType = null;
+            });
+            el.addEventListener('touchcancel', () => {
+                clearGhost();
+                if (placeholder && placeholder.parentNode) {
+                    placeholder.parentNode.removeChild(placeholder);
+                }
+                draggedFromPalette = null;
+                currentDragType = null;
+            });
         });
 
-// Add this where you define or append new form elements
-const makeElementDraggable = (element) => {
-    element.setAttribute('draggable', 'true');
-    element.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('text/plain', element.dataset.id);
-        e.dropEffect = 'move';
-    });
-};
+        const makeFormElementDraggable = (element) => {
+            element.setAttribute('draggable', 'true');
+            element.dataset.draggableId = 'element_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+            
+            const dragHandle = document.createElement('div');
+            dragHandle.className = 'drag-handle';
+            dragHandle.innerHTML = '<i class="fas fa-grip-vertical"></i>';
+            element.insertBefore(dragHandle, element.firstChild);
 
-// Assign unique IDs and enable dragging when adding elements
-const addElementToPreview = (elementHtml) => {
-    const newDiv = document.createElement('div');
-    newDiv.className = 'form-element';
-    newDiv.dataset.id = Date.now().toString(); 
-    newDiv.innerHTML = elementHtml;
-    newDiv.style.cursor = 'grab'
-
-    const removeButton = document.createElement('button');
-    removeButton.className = 'remove-button';
-    removeButton.innerHTML = '<i class="fas fa-trash"></i>';
-    removeButton.addEventListener('click', () => {
-        newDiv.remove();
-    });
-    newDiv.appendChild(removeButton);
-
-    makeElementDraggable(newDiv);
-    liveFormPreview.appendChild(newDiv);
-};
-
-// Enable drop behavior on the form preview area
-liveFormPreview.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-});
-
-liveFormPreview.addEventListener('drop', (e) => {
-    e.preventDefault();
-    const draggedId = e.dataTransfer.getData('text/plain');
-    const draggedEl = liveFormPreview.querySelector(`[data-id='${draggedId}']`);
-    const dropTarget = [...liveFormPreview.children].find((el) => {
-        const rect = el.getBoundingClientRect();
-        return e.clientY >= rect.top && e.clientY <= rect.bottom;
-    });
-
-    if (draggedEl && dropTarget && draggedEl !== dropTarget) {
-        const dropIndex = [...liveFormPreview.children].indexOf(dropTarget);
-        const dragIndex = [...liveFormPreview.children].indexOf(draggedEl);
-        if (dragIndex < dropIndex) {
-            dropTarget.after(draggedEl);
-        } else {
-            dropTarget.before(draggedEl);
-        }
-    }
-});
-
-        addElementButton.addEventListener('click', () => {
-            const selectedType = elementTypeSelect.value;
-            let elementHtml = '';
-            let labelText;
-            let groupName;
-            let optionLabel;
-            let selectOptions;
-            let selectLabel;
-            let buttonText;
-            let contentText;
-            let whatsappButtonText;
-            let whatsappPhoneInputId;
-            let whatsappDefaultMessage;
-
-            switch (selectedType) {
-                case 'textInput':
-                    labelText = document.getElementById('labelText').value || 'Text Label';
-                    elementHtml = createTextInput(labelText);
-                    break;
-                case 'numberInput':
-                    labelText = document.getElementById('labelText').value || 'Number Label';
-                    elementHtml = createNumberInput(labelText);
-                    break;
-                case 'emailInput':
-                    labelText = document.getElementById('labelText').value || 'Email Label';
-                    elementHtml = createEmailInput(labelText);
-                    break;
-                case 'dateInput':
-                    labelText = document.getElementById('labelText').value || 'Date Label';
-                    elementHtml = createDateInput(labelText);
-                    break;
-                case 'passwordInput':
-                    labelText = document.getElementById('labelText').value || 'Password Label';
-                    elementHtml = createPasswordInput(labelText);
-                    break;
-                case 'textarea':
-                    labelText = document.getElementById('labelText').value || 'Text Area Label';
-                    elementHtml = createTextArea(labelText);
-                    break;
-                case 'checkbox':
-                    labelText = document.getElementById('labelText').value || 'Checkbox Label';
-                    elementHtml = createCheckbox(labelText);
-                    break;
-                case 'radio':
-                    groupName = document.getElementById('radioGroupName').value || 'radioGroup';
-                    optionLabel = document.getElementById('radioOptionLabel').value || 'Radio Option';
-                    elementHtml = createRadioButton(groupName, optionLabel);
-                    break;
-                case 'select':
-                    selectLabel = document.getElementById('selectLabelText').value || 'Select Label';
-                    selectOptions = document.getElementById('selectOptions').value ? document.getElementById('selectOptions').value.split(',').map(s => s.trim()) : ['Option 1', 'Option 2'];
-                    elementHtml = createSelectInput(selectLabel, selectOptions);
-                    break;
-                case 'button':
-                    buttonText = document.getElementById('buttonText').value || 'Submit Button';
-                    elementHtml = createButton(buttonText);
-                    break;
-                case 'heading1':
-                    contentText = document.getElementById('contentText').value || 'Heading 1 Text';
-                    elementHtml = createHeading(1, contentText);
-                    break;
-                case 'heading2':
-                    contentText = document.getElementById('contentText').value || 'Heading 2 Text';
-                    elementHtml = createHeading(2, contentText);
-                    break;
-                case 'heading3':
-                    contentText = document.getElementById('contentText').value || 'Heading 3 Text';
-                    elementHtml = createHeading(3, contentText);
-                    break;
-                case 'paragraph':
-                    contentText = document.getElementById('contentText').value || 'This is a paragraph of text.';
-                    elementHtml = createParagraph(contentText);
-                    break;
-                case 'boldText':
-                    contentText = document.getElementById('contentText').value || 'Bold text here.';
-                    elementHtml = createBoldText(contentText);
-                    break;
-                case 'phoneNumberInput':
-                    labelText = document.getElementById('labelText').value || 'Phone Number';
-                    elementHtml = createPhoneNumberInput(labelText);
-                    break;
-                case 'whatsappButton':
-                    whatsappButtonText = document.getElementById('whatsappButtonText').value || 'Send via WhatsApp';
-                    whatsappPhoneInputId = document.getElementById('whatsappPhoneInputId').value || 'phone_number_input';
-                    whatsappDefaultMessage = document.getElementById('whatsappDefaultMessage').value || 'Hello, I would like to inquire about your services.';
-                    elementHtml = createWhatsAppButton(whatsappButtonText, whatsappPhoneInputId, whatsappDefaultMessage);
-                    break;
-                default:
-                    console.log('Please select an element type.');
-                    return;
+            const existingContent = element.querySelector('.form-element-content');
+            if (!existingContent) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'form-element-content';
+                while (element.firstChild && element.firstChild !== dragHandle) {
+                    wrapper.appendChild(element.firstChild);
+                }
+                element.appendChild(wrapper);
             }
+            
 
-            if (elementHtml) {
-                addElementToPreview(elementHtml);
+            dragHandle.addEventListener('dragstart', e => {
+                draggedFromPreview = element;
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', element.dataset.draggableId);
+                element.classList.add('is-dragging');
+                // element.style.visibility = 'hidden'; /* Set visibility to hidden during dragstart for mouse */
+            });
+            dragHandle.addEventListener('dragend', e => {
+                if (draggedFromPreview) {
+                    draggedFromPreview.classList.remove('is-dragging');
+                    // draggedFromPreview.style.visibility = 'visible'; /* Reset visibility on dragend for mouse */
+                }
+                draggedFromPreview = null;
+            });
 
-                if (selectedType === 'whatsappButton') {
-                    const addedButton = liveFormPreview.lastElementChild.querySelector('.whatsapp-send-button');
-                    if (addedButton) {
-                        addedButton.addEventListener('click', (event) => {
-                            const targetPhoneInputId = event.target.dataset.phoneInputId;
-                            const defaultMsg = event.target.dataset.defaultMessage;
-                            const phoneInput = liveFormPreview.querySelector(`#${targetPhoneInputId}`);
-                            let phoneNumber = '';
-                            if (phoneInput) {
-                                phoneNumber = phoneInput.value.replace(/\D/g, '');
-                            }
+            dragHandle.addEventListener('touchstart', e => {
+                e.preventDefault(); 
+                currentDragType = 'preview';
+                draggedFromPreview = element;
+                ghostElement = createGhostElement(element);
+                updateGhostPosition(e);
+                element.style.visibility = 'hidden';
+            }, { passive: false });
 
-                            if (phoneNumber) {
-                                const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMsg)}`;
-                                window.open(whatsappUrl, '_blank');
-                            } else {
-                                console.log('Please enter a phone number in the associated input field.');
-                            }
-                        });
+            dragHandle.addEventListener('touchmove', e => {
+                e.preventDefault();
+                updateGhostPosition(e);
+                const touchY = e.touches[0].clientY;
+                const afterElement = getDragAfterElement(preview, touchY);
+                if (!placeholder) {
+                    placeholder = document.createElement('div');
+                    placeholder.className = 'drag-placeholder';
+                }
+                /* Only move placeholder if its position needs to change */
+                if (afterElement == null) {
+                    if (preview.lastChild !== placeholder) { /* Check if already last child */
+                        preview.appendChild(placeholder);
+                    }
+                } else {
+                    if (placeholder.nextSibling !== afterElement || placeholder.previousSibling !== afterElement) { /* Check if already before afterElement */
+                        preview.insertBefore(placeholder, afterElement);
                     }
                 }
+            }, { passive: false });
 
-                elementTypeSelect.value = '';
-                elementOptionsDiv.innerHTML = '';
+            dragHandle.addEventListener('touchend', e => {
+                e.preventDefault();
+                clearGhost();
+                if (placeholder && placeholder.parentNode) {
+                    placeholder.parentNode.removeChild(placeholder);
+                }
+
+                if (draggedFromPreview) {
+                    element.style.visibility = ''; /* Reset visibility directly on original element */
+                    const touchY = e.changedTouches[0].clientY;
+                    const afterElement = getDragAfterElement(preview, touchY);
+
+                    if (draggedFromPreview && draggedFromPreview !== afterElement) {
+                        if (afterElement == null) {
+                            preview.appendChild(draggedFromPreview);
+                        } else {
+                            preview.insertBefore(draggedFromPreview, afterElement);
+                        }
+                    }
+                    draggedFromPreview.classList.remove('is-dragging');
+                    draggedFromPreview = null;
+                }
+                currentDragType = null;
+            }, { passive: false });
+            dragHandle.addEventListener('touchcancel', () => {
+                clearGhost();
+                if (placeholder && placeholder.parentNode) {
+                    placeholder.parentNode.removeChild(placeholder);
+                }
+                if (draggedFromPreview) {
+                    draggedFromPreview.style.visibility = ''; /* Reset visibility directly on original element */
+                    draggedFromPreview.classList.remove('is-dragging');
+                }
+                draggedFromPreview = null;
+                currentDragType = null;
+            });
+        };
+
+        preview.addEventListener('dragover', e => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = draggedFromPalette ? 'copy' : 'move';
+
+            if (!placeholder) {
+                placeholder = document.createElement('div');
+                placeholder.className = 'drag-placeholder';
+            }
+            // Always remove placeholder first to ensure clean insertion
+            if (placeholder.parentNode) {
+                placeholder.parentNode.removeChild(placeholder);
+            }
+
+            const afterElement = getDragAfterElement(preview, e.clientY);
+            if (afterElement == null) {
+                preview.appendChild(placeholder);
+            } else {
+                preview.insertBefore(placeholder, afterElement);
             }
         });
 
-        clearFormButton.addEventListener('click', () => {
-            liveFormPreview.innerHTML = '';
-        });
-
-// ... (rest of your existing script)
-
-const generateFormHtml = (includeRemoveButtons) => {
-    let formContent;
-    if (includeRemoveButtons) {
-        formContent = liveFormPreview.innerHTML;
-    } else {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = liveFormPreview.innerHTML;
-        const removeButtons = tempDiv.querySelectorAll('.remove-button');
-        removeButtons.forEach(btn => btn.remove());
-        formContent = tempDiv.innerHTML;
-    }
-
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(formContent, 'text/html');
-    const whatsappButtons = doc.querySelectorAll('.whatsapp-send-button');
-    formContent = doc.body.innerHTML;
-
-    return `
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generated Form</title>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 20px;
-            background-color: ${body.classList.contains('dark-mode') ? '#1a1a2e' : '#f0f2f5'};
-            color: ${body.classList.contains('dark-mode') ? '#e0e0e0' : '#333'};
-        }
-        form {
-            padding: 20px;
-            border: 1px solid ${body.classList.contains('dark-mode') ? '#4a4a6e' : '#ccc'};
-            border-radius: 8px;
-            background-color: ${body.classList.contains('dark-mode') ? '#2e2e4a' : '#f9f9f9'};
-            max-width: 600px;
-            margin: 0 auto;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: inherit;
-        }
-        input[type="text"],
-        input[type="number"],
-        input[type="email"],
-        input[type="date"],
-        input[type="password"],
-        input[type="tel"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid ${body.classList.contains('dark-mode') ? '#5a5a7a' : '#ddd'};
-            border-radius: 4px;
-            box-sizing: border-box;
-            background-color: ${body.classList.contains('dark-mode') ? '#3a3a5a' : '#fefefe'};
-            color: inherit;
-        }
-        input[type="checkbox"],
-        input[type="radio"] {
-            width: auto;
-            margin-right: 5px;
-        }
-        button {
-            background-color: ${body.classList.contains('dark-mode') ? '#6a8eff' : '#007bff'};
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            width:fit-content !important;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        button:hover {
-            background-color: ${body.classList.contains('dark-mode') ? '#4a6ee0' : '#0056b3'};
-        }
-        h1, h2, h3, p, strong {
-            margin-bottom: 10px;
-            color: inherit;
-        }
-            .form-element{
-            display:flex;
-            justify-content:  flex-start;
-            align-items: center;
-                flex-wrap: wrap;
+        preview.addEventListener('dragleave', () => {
+            if (placeholder && placeholder.parentNode) {
+                placeholder.parentNode.removeChild(placeholder);
             }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    </head>
-    <form id="content">
-        ${formContent}
-    </form>
-
-
-    `;
-};
-
-
-        generateHTMLButton.addEventListener('click', () => {
-            const fullHTML = generateFormHtml(true);
-            const newWindow = window.open();
-            newWindow.document.write(fullHTML);
-            newWindow.document.close();
         });
 
-        publishFormButton.addEventListener('click', () => {
-            const fullHTML = generateFormHtml(false);
+        preview.addEventListener('drop', e => {
+            e.preventDefault();
+            const initialMessage = preview.querySelector('.initial-message');
+            if (initialMessage) {
+                initialMessage.remove();
+            }
+
+            if (placeholder && placeholder.parentNode) {
+                placeholder.parentNode.removeChild(placeholder);
+            }
+
+            if (draggedFromPalette) {
+                const type = e.dataTransfer.getData('text/plain');
+                const elem = document.createElement('div');
+                elem.className = 'form-element';
+                elem.innerHTML = createElementHTML(type);
+                elem.dataset.type = type;
+
+                makeFormElementDraggable(elem);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-element-button';
+                removeBtn.innerHTML = '<i class="fas fa-times-circle"></i>';
+                removeBtn.addEventListener('click', () => {
+                    elem.remove();
+                    if (preview.children.length === 0) {
+                         preview.innerHTML = '<p class="initial-message">Drop elements here to build your form!</p>';
+                    }
+                });
+                elem.appendChild(removeBtn);
+
+                const afterElement = getDragAfterElement(preview, e.clientY);
+                if (afterElement == null) {
+                    preview.appendChild(elem);
+                } else {
+                    preview.insertBefore(elem, afterElement);
+                }
+
+                draggedFromPalette = null;
+
+            } else if (draggedFromPreview) {
+                const draggedId = e.dataTransfer.getData('text/plain');
+                const draggedEl = preview.querySelector(`[data-draggable-id="${draggedId}"]`);
+                
+                const afterElement = getDragAfterElement(preview, e.clientY);
+
+                if (draggedEl && draggedEl !== afterElement) {
+                    if (afterElement == null) {
+                        preview.appendChild(draggedEl);
+                    } else {
+                        preview.insertBefore(draggedEl, afterElement);
+                    }
+                }
+                draggedFromPreview.classList.remove('is-dragging');
+                draggedFromPreview = null;
+            }
+        });
+
+        function getDragAfterElement(container, clientY) {
+            const draggableElements = [...container.querySelectorAll('.form-element:not(.is-dragging):not([style*="visibility: hidden"])')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const midPoint = box.top + box.height / 2;
+
+                if (clientY < midPoint) { /* Mouse/touch is above the midpoint */
+                    /* Calculate offset as difference from midPoint. Smaller absolute offset is closer. */
+                    const offset = midPoint - clientY;
+                    if (offset < closest.offset) {
+                        return { offset: offset, element: child };
+                    }
+                }
+                return closest;
+            }, { offset: Infinity, element: null }).element; /* Initialize with Infinity to find smallest positive offset */
+        }
+
+        preview.querySelectorAll('.form-element').forEach(makeFormElementDraggable);
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('show');
+        }
+
+        function generateHTML() {
+            const tempContainer = document.createElement('div');
+            Array.from(preview.children).forEach(child => {
+                if (child.classList.contains('initial-message') || child.id === 'formName' || (child.tagName === 'H3' && child.textContent.includes('Form Name:'))) {
+                    return;
+                }
+
+                const cleanedElement = child.cloneNode(true);
+
+                cleanedElement.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+                cleanedElement.querySelectorAll('.remove-element-button').forEach(el => el.remove());
+                cleanedElement.querySelectorAll('.drag-handle').forEach(el => el.remove());
+                cleanedElement.removeAttribute('draggable');
+                cleanedElement.removeAttribute('data-draggable-id');
+                cleanedElement.removeAttribute('data-type');
+                cleanedElement.classList.remove('is-dragging');
+                cleanedElement.style.display = '';
+                cleanedElement.style.alignItems = '';
+                cleanedElement.style.gap = '';
+
+
+                const contentWrapper = cleanedElement.querySelector('.form-element-content');
+                if (contentWrapper) {
+                    const builderOnlyInput = contentWrapper.querySelector('[data-builder-only="true"]');
+                    if (builderOnlyInput) {
+                        const associatedLabel = contentWrapper.querySelector('[data-builder-only-label="true"]');
+                        if (associatedLabel) {
+                            associatedLabel.remove();
+                        }
+                        builderOnlyInput.remove();
+                    }
+
+                    const mediaElement = contentWrapper.querySelector('img, iframe');
+                    if (mediaElement) {
+                        mediaElement.removeAttribute('contenteditable');
+                        mediaElement.style.outline = '';
+                        mediaElement.style.cursor = '';
+                    }
+
+                    while (contentWrapper.firstChild) {
+                        cleanedElement.insertBefore(contentWrapper.firstChild, contentWrapper);
+                    }
+                    contentWrapper.remove();
+                }
+
+                if (cleanedElement.children.length === 0 && !cleanedElement.textContent.trim()) {
+                     cleanedElement.remove();
+                } else {
+                    tempContainer.appendChild(cleanedElement);
+                }
+            });
+
+            tempContainer.querySelectorAll('label').forEach(label => {
+                const input = label.nextElementSibling;
+                if (input && (input.tagName === 'INPUT' || input.tagName === 'TEXTAREA' || input.tagName === 'SELECT')) {
+                    const uniqueId = label.textContent.trim().toLowerCase().replace(/\s+/g, '_') + '_' + Math.random().toString(36).substring(2, 9);
+                    input.id = uniqueId;
+                    label.setAttribute('for', uniqueId);
+                } else if (label.querySelector('input[type="checkbox"], input[type="radio"]')) {
+                    const checkboxRadio = label.querySelector('input[type="checkbox"], input[type="radio"]');
+                    const uniqueId = label.textContent.trim().toLowerCase().replace(/\s+/g, '_') + '_' + Math.random().toString(36).substring(2, 9);
+                    checkboxRadio.id = uniqueId;
+                    label.setAttribute('for', uniqueId);
+                }
+            });
+
+            const html = tempContainer.innerHTML;
+            const styled = `<style>.form-element-content h1,
+        .form-element-content h2,
+        .form-element-content h3{
+            font-weight: 900;
+            text-align: left !important;
+        }
+        .form-element-content h3{
+            font-size: small;
+        }
+        .form-element-content h2{
+            font-size: large;
+        }
+        .form-element-content h1{
+            font-size: x-large;
+        }</style><form style="padding:20px;max-width:600px;margin:20px auto;border:1px solid #ccc;border-radius:8px;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,0.1);">${html}</form><style>body{font-family:sans-serif;padding:0;margin:0;background:#f9f9f9}.form-element{margin-bottom:15px;padding:10px;border:1px solid #eee;border-radius:5px;}input,textarea,button,select{width:100%;padding:10px;margin-top:5px;border:1px solid #ccc;border-radius:4px}</style>`;
+            
+            localStorage.setItem('generatedFormHtml', styled);
+            // window.location.href = '/preview'; 
             const id = localStorage.getItem('id')
             const name = document.getElementById('formName').value.trim()
-            if(fullHTML && id && name){
-            Publish(id, fullHTML, name)
-            } else{
-                customModal('Please, fill in all details!','error')
+            if(!id || !name || !styled){
+                customModal('Missing fields, Please Confirm You havve edited the Form Name', 'error')
+                return
             }
-        });
-    async function Publish(id, fullHTML, name) {
+            Publish(id,styled, name)
+        }
+        async function Publish(id, fullHTML, name) {
     try {
-        const res = await fetch('http://127.0.0.1:5000/api/save-form', {
+        const res = await fetch(`${BASE_URL}/api/save-form`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -889,7 +1059,35 @@ const generateFormHtml = (includeRemoveButtons) => {
     }
 } 
 
-    });
-</script>
+    </script>
+    <script>
+        let currentSelectElement = null;
+        
+        function openOptionModal(selectEl) {
+          currentSelectElement = selectEl;
+          const existingOptions = Array.from(selectEl.options).map(opt => opt.text).join(', ');
+          document.getElementById('optionInput').value = existingOptions;
+          document.getElementById('optionModal').classList.remove('hidden');
+          document.getElementById('optionModal').classList.add('flex');
+
+        }
+        
+        function closeOptionModal() {
+          document.getElementById('optionModal').classList.add('hidden');
+          document.getElementById('optionModal').classList.remove('flex');
+          document.getElementById('optionInput').value = '';
+          currentSelectElement = null;
+        }
+        
+        function saveOptions() {
+          const rawInput = document.getElementById('optionInput').value;
+          const options = rawInput.split(',').map(opt => opt.trim()).filter(opt => opt !== '');
+          if (currentSelectElement) {
+            currentSelectElement.innerHTML = options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+          }
+          closeOptionModal();
+        }
+        </script>
+        
 </body>
 </html>
