@@ -4,8 +4,8 @@ icon.addEventListener('click', (e)=>{
     document.querySelector('.sidebar').classList.toggle('visible')
   }
 })
-          // const BASE_URL = 'https://yoform.pythonanywhere.com'
-          const BASE_URL = 'http://127.0.0.1:5000'
+          const BASE_URL = 'https://yoform.pythonanywhere.com'
+        //   const BASE_URL = 'http://127.0.0.1:5000'
 
       document.addEventListener('DOMContentLoaded', () => {
 
@@ -102,6 +102,10 @@ icon.addEventListener('click', (e)=>{
               modalOverlay.classList.remove('show');
           });
 
+          setUpListeners()
+          document.querySelector('#reloadForms').addEventListener('click', ()=>{
+            fetchUserForms(localStorage.getItem('id'))
+          })
           const fetchUserForms = async (userId) => {
               formsList.innerHTML = '';
               loadingMessage.classList.remove('hidden');
@@ -113,6 +117,7 @@ icon.addEventListener('click', (e)=>{
                   customModal('Please log in to view your forms.', 'error');
                   return;
               }
+               
 
               try {
                   const response = await fetch(`${BASE_URL}/api/user-forms/${userId}`);
@@ -126,28 +131,36 @@ icon.addEventListener('click', (e)=>{
                   const sidebar = document.querySelector('.mainUl')
 
                   let initialSdb = sidebar.innerHTML
+                    let ip_div = ''
                   if(data.user.i_p){
-                    let ip_div = ` <li href="/pro/analytics/?id=${data.user.id}">
+                    const analytics = document.querySelector('.analytics')
+                    if(analytics){
+                    ip_div = ''
+                    } else{
+                    ip_div = ` <li class="analytics" href="/pro/analytics/?id=${data.user.id}">
                                  <i class="fas fa-gem"></i> Analytics
                               </li>`
                   sidebar.innerHTML = `${initialSdb}  <p></p>${ip_div}`
+                  }
                   }
                   const name = data.user.name
                   if(name){
                     document.querySelector('.loggedIn').innerText = name
                   }
-                  if (!data.forms || data.forms.length < 1 ){
+                  if (!data.forms || data.forms.length === 0 ){
                    noFormsMessage.classList.remove('hidden')
                    setTimeout(() => {
                    noFormsMessage.classList.remove('hidden')
                    }, 2000);
+                  //  document.getElementById('noForms').style.display = 'block'
+
                   }
-                    setUpListeners() 
 
                   if (data.forms && data.forms.length > 0) {
                       data.forms.forEach(form => {
                         const sidebarForms = document.querySelector('.forms')
-                        let initial = sidebarForms.innerHTML;                            let newLi = ` <li class="none" href="/form/?id=${form.id}">
+                        let initial = sidebarForms.innerHTML;                          
+                          let newLi = ` <li class="none" href="/form/?id=${form.id}">
                                  <i class="fas fa-brush"></i> ${form.name}
                               </li>`
                           sidebarForms.innerHTML = `${initial}  <p></p>${newLi}`
@@ -163,7 +176,7 @@ icon.addEventListener('click', (e)=>{
                                   <a href="/form/?id=${form.id}&utm=dash_${data.user.id}" target="_blank" class="inline-flex items-center px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-md hover:bg-blue-600 transition-colors">
                                       <i class="fas fa-eye mr-1"></i> View
                                   </a>
-                                  <a href="#" class="inline-flex items-center px-3 py-1 bg-green-500 text-white text-xs font-medium rounded-md hover:bg-green-600 transition-colors">
+                                  <a href="#edit_form/?id=${form.id}" onclick="prepareEdit('${form.id}')" class="inline-flex items-center px-3 py-1 bg-green-500 text-white text-xs font-medium rounded-md hover:bg-green-600 transition-colors">
                                       <i class="fas fa-edit mr-1"></i> Edit
                                   </a>
                                   <a href="#delete/form/?id=${form.id}" onclick="deleteForm('${form.name}','${form.id}')" class="inline-flex items-center px-3 py-1 bg-red-500 text-white text-xs font-medium rounded-md hover:bg-red-600 transition-colors">
@@ -220,29 +233,35 @@ icon.addEventListener('click', (e)=>{
 
           customModal('Copied','success')
       }
-    function setUpListeners(){
-        console.log('setting listeners')
-      const lis = document.querySelectorAll('li')
-      lis.forEach(li=>{
-        var link = li.getAttribute('href')
-        if(link){
-          li.addEventListener('click', ()=>{
-            window.location.href = link
-            if(li.classList.contains('toggle')){
-              const forms = document.querySelector('.forms')
-              const lis = forms.querySelectorAll('li')
-              lis.forEach(li=>{
-                console.log(li.classList)
-                li.classList.add('flex')
-                li.classList.remove('none')
-              })
+      setTimeout(() => {
+        setUpListeners()
+        
+      }, 2000);
+    function setUpListeners() {
+    console.log('setting listeners');
+    const lis = document.querySelectorAll('li');
 
-            }
+    lis.forEach(li => {
+        li.addEventListener('click', () => {
+        console.log(li.innerHTML);
+        const link = li.getAttribute('href');
 
-          })
+        if (link) {
+            window.location.href = link;
         }
-      })
+
+        if (li.classList.contains('toggle')) {
+            const forms = document.querySelector('.forms');
+            const formItems = forms.querySelectorAll('li');
+            formItems.forEach(item => {
+            item.classList.toggle('flex');
+            item.classList.toggle('none');
+            });
+        }
+        });
+    });
     }
+
     const sidebar = document.querySelector('.sidebar')
     const menu_icon = document.querySelector('.menu-icon')
     body.addEventListener('click', (e)=>{
@@ -286,4 +305,8 @@ icon.addEventListener('click', (e)=>{
         customModal(data.msg, 'success')
         fetchUserForms(u_id)
       }
+      }
+      function prepareEdit(id){
+        localStorage.setItem('edit_id', id)
+        window.location.href = `/new_form/?edit_mode=true&id=${id}&utm=${localStorage.getItem('id')}`
       }

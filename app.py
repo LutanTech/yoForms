@@ -334,6 +334,32 @@ def delete_logs(form_id):
         print(f'Error deleting logs: {e}')
         return False
 
+@app.route('/api/get_form/<form_id>', methods=['GET'])
+def get_published_form(form_id):
+    form = PublishedForm.query.get(form_id)
+    if not form:
+        return jsonify({'error': 'Form not found'}), 404
+
+    return jsonify(form.to_dict()), 200
+
+@app.route('/api/update_form/<form_id>', methods=['POST'])
+def update_published_form(form_id):
+    data = request.get_json()
+    name = data.get('name')
+    html = data.get('html')
+
+    if not name or not html:
+        return jsonify({'error': 'Missing name or HTML'}), 400
+
+    form = PublishedForm.query.get(form_id)
+    if not form:
+        return jsonify({'error': 'Form not found'}), 404
+
+    form.name = name
+    form.html = html
+    db.session.commit()
+
+    return jsonify({'message': 'Form updated successfully'}), 200
 
 if __name__ == '__main__':
     with app.app_context():

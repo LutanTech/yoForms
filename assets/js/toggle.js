@@ -4,13 +4,13 @@ const body = document.body;
 const enableDarkMode = () => {
   body.classList.add('dark-mode');
   localStorage.setItem('darkMode', 'enabled');
-  darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+  darkModeToggle.innerHTML = '🔆';
 };
 
 const disableDarkMode = () => {
   body.classList.remove('dark-mode');
   localStorage.setItem('darkMode', 'disabled');
-  darkModeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+  darkModeToggle.innerHTML = '🌙';
 };
 
 // On page load
