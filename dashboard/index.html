@@ -11,6 +11,8 @@
     <link href="../assets/css/sdb.css" rel="stylesheet">
     <script src="../assets/js/toggle.js" defer></script>
     <script src="../assets/js/ld.js"></script>
+        <link rel="icon" type="image/x-icon" href="https://i.ibb.co/V5v4mFb/image.png">
+
 </head>
 <body class="bg-gray-100 text-gray-800">
     <header style="align-items: center;"  class="header bg-white shadow-md py-4 px-6 flex justify-between items-center border-b border-gray-200 transition-colors duration-400">
@@ -76,7 +78,7 @@
       </div>
     <main class="flex-grow p-8">
         <div class="container mx-auto p-6 border border-gray-300 rounded-xl bg-white shadow-lg transition-colors duration-400">
-          <a href="#reloadForms" id="reloadForms" onclick="refreshForms()">🔁</b>
+          <a href="#reloadForms" id="reloadForms">🔁</a>
 
 
             <div id="formsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -103,5 +105,31 @@
     </div>
 <script src="/assets/js/dash.js"> </script>
 <script src="/assets/js/confirm.js"> </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+setTimeout(() =>{
+            const scripts = document.getElementsByTagName('script');
+            Array.from(scripts)
+                .forEach(script => {
+                    const org = script.src;
+                    if (org) {
+                        const newLink =
+                            `${org.split('?')[0]}?v=${new Date().toLocaleTimeString()}`;
+                        script.src = newLink;
+                    }
+                });
+            const links = document.getElementsByTagName('link');
+            Array.from(links)
+                .forEach(link => {
+                    const org = link.href;
+                    if (org) {
+                        const newLink =
+                            `${org.split('?')[0]}?v=${new Date().toLocaleTimeString()}`;
+                        link.href = newLink;
+                    }
+                });
+}, 0);
+        })
+</script>
 </body>
 </html>
