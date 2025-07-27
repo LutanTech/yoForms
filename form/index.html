@@ -6,6 +6,10 @@
     <title>yoforms</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="../assets/cdn/tailwind.js"></script>
+    <script src="../assets/js/toggle.js"></script>
+    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/V5v4mFb/image.png">
+
+
     <style>
         body {
             font-family: "Inter", sans-serif;
@@ -94,6 +98,14 @@
         .form-element h1 {
             font-size: x-large !important;
         }
+        label{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    gap: 10px;
+    height: fit-content;
+        }
     </style>
 </head>
 <body>
@@ -131,8 +143,8 @@
     </footer>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            // const BASE_URL = 'https://yoform.pythonanywhere.com'
-            const BASE_URL = 'http://127.0.0.1:5000'
+            const BASE_URL = 'https://yoform.pythonanywhere.com'
+            // const BASE_URL = 'http://127.0.0.1:5000'
         
             const formContentDiv = document.getElementById('formContent');
             const loadingDiv = document.getElementById('loading');
@@ -176,7 +188,7 @@
                     formContentDiv.innerHTML = html;
                     loadingDiv.classList.add('hidden');
                     formContentDiv.classList.remove('hidden');
-                            // log('json', data.form.id);
+                            log('json', data.form.id);
 
         
                     document.getElementById('sendViaWhatsapp').addEventListener('click', async () => {
@@ -255,6 +267,32 @@
         });
 
         </script>
+        <script>
+document.addEventListener('DOMContentLoaded', () => {
+setTimeout(() =>{
+            const scripts = document.getElementsByTagName('script');
+            Array.from(scripts)
+                .forEach(script => {
+                    const org = script.src;
+                    if (org) {
+                        const newLink =
+                            `${org.split('?')[0]}?v=${new Date().toLocaleTimeString()}`;
+                        script.src = newLink;
+                    }
+                });
+            const links = document.getElementsByTagName('link');
+            Array.from(links)
+                .forEach(link => {
+                    const org = link.href;
+                    if (org) {
+                        const newLink =
+                            `${org.split('?')[0]}?v=${new Date().toLocaleTimeString()}`;
+                        link.href = newLink;
+                    }
+                });
+}, 0);
+        })
+</script>
         </body>
         </html>
         
